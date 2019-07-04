@@ -1,0 +1,14 @@
+{
+  "cof": {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "cofdb"
+  },
+  "cocy": {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "cocydb"
+  }
+}

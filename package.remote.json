@@ -1,0 +1,17 @@
+{
+  "name": "co-api",
+  "version": "1.0.0",
+  "description": "CO API project using Express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Stéphane Devouard",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "nodemon": "^1.19.1"
+  }
+}
