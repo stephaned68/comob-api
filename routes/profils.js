@@ -1,8 +1,16 @@
+/**
+ * Profiles routes
+ */
+
 const express = require('express');
 const router = express.Router();
 
 const dbConnect = require('../dbconnect');
 
+/**
+ * Route: /profiles/{:dataset}
+ * Return list of profiles for a dataset
+ */
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;

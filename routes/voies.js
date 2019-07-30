@@ -1,13 +1,66 @@
+/**
+ * Paths routes
+ */
+
 const express = require('express');
 const router = express.Router();
 
 const dbConnect = require('../dbconnect');
 
-router.get('/:ds/:profil', (req, res, next) => {
+/**
+ * Route : /paths/{:dataset}/?type={1|2|racial|prestige}
+ * Return the racial or prestige paths
+ */
+router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
-  const profil = req.params.profil;
+
+  qs = req.query;
+
+  if (!qs.hasOwnProperty('type')) throw "Need type=? on the URL";
+
+  type = qs.type || "";
+  if (type !== "1" && type !== "2") {
+    types = {
+      "racial": "1",
+      "prestige": "2"
+    };
+    type = types[type.toLowerCase()];
+  }
+
+  const sql = [
+    `select vo.* from ${dbid}_voies as vo`,
+    `where vo.type = ?`
+  ].join(" ");
+
+  conn.connect(function (err) {
+    if (err) throw err;
+    conn.query({
+        sql: sql,
+        values: [
+          type
+        ]
+      },
+      function (err, result) {
+        if (err) throw err;
+        res.status(200).json({
+          rs: result
+        });
+      })
+  });
+
+});
+
+/**
+ * Route : /paths/{:dataset}/{:profile}
+ * Return paths for a profile
+ */
+router.get('/:ds/:profile', (req, res, next) => {
+
+  const dbid = req.params.ds;
+  const conn = dbConnect.getConn(dbid);
+  const profile = req.params.profile;
 
   const sql = [
     `select vo.* from ${dbid}_voies_profils as vp`,
@@ -18,9 +71,11 @@ router.get('/:ds/:profil', (req, res, next) => {
   conn.connect(function (err) {
     if (err) throw err;
     conn.query({
-      sql: sql,
-      values: [profil]
-    },
+        sql: sql,
+        values: [
+          profile
+        ]
+      },
       function (err, result) {
         if (err) throw err;
         res.status(200).json({
@@ -28,6 +83,7 @@ router.get('/:ds/:profil', (req, res, next) => {
         });
       })
   });
+
 });
 
 module.exports = router;

@@ -3,12 +3,12 @@
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": "cofdb"
+    "database": "comobdb"
   },
   "cocy": {
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": "cocydb"
+    "database": "comobdb"
   }
 }
