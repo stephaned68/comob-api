@@ -1,2 +1,2 @@
-# co-api
+# comob-api
 NodeJS Express REST API for serving Chroniques Oubliées TTRPG compendium data
