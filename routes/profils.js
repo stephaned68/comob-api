@@ -16,10 +16,14 @@ router.get('/:ds', (req, res, next) => {
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
 
-  const familyList = req.query.family;
+  const familyList = req.query.family || '';
   let familyIn = '';
-  if (familyList) {
-    familyIn = ` where famille in ('${familyList.join("','")}')`;
+  if (familyList !== '') {
+    families = familyList.split(',');
+    for (const family of families) {
+      familyIn += `,'${family}'`;
+    }
+    familyIn = ` where famille in (${familyIn.slice(1)})`;
   }
 
   const sql = `select * from ${dbid}_profils` + familyIn;
