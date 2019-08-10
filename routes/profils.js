@@ -15,7 +15,14 @@ router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
-  const sql = `select * from ${dbid}_profils`;
+
+  const familyList = req.query.family;
+  let familyIn = '';
+  if (familyList) {
+    familyIn = ` where famille in ('${familyList.join("','")}')`;
+  }
+
+  const sql = `select * from ${dbid}_profils` + familyIn;
 
   conn.connect(function (err) {
     if (err) throw err;
