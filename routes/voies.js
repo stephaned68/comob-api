@@ -16,11 +16,10 @@ router.get('/:ds', (req, res, next) => {
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
 
-  qs = req.query;
+  let type = req.query.type || '';
 
-  if (!qs.hasOwnProperty('type')) throw "Need type=? on the URL";
+  if (type === '') throw 'Need type=? on the URL';
 
-  type = qs.type || "";
   if (type !== "1" && type !== "2") {
     types = {
       "racial": "1",
