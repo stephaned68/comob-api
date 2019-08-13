@@ -23,7 +23,7 @@ router.get('/:ds', (req, res, next) => {
     for (const family of families) {
       familyIn += `,'${family}'`;
     }
-    familyIn = `where famille in (${familyIn.slice(1)})`;
+    familyIn = `where ${dbid}_profils.famille in (${familyIn.slice(1)})`;
   }
 
   const sql = [
