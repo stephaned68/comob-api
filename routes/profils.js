@@ -29,7 +29,8 @@ router.get('/:ds', (req, res, next) => {
   const sql = [
     `select * from ${dbid}_profils`,
     `inner join ${dbid}_familles as fa on ${dbid}_profils.famille = fa.famille`,
-    familyIn
+    familyIn,
+    `order by profil`
   ].join(" ");
 
   conn.connect(function (err) {
