@@ -45,7 +45,7 @@ router.get('/:ds/:path', (req, res, next) => {
 
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
-  const path = req.params.path;
+  const path = decodeURI(req.params.path);
 
   const sql = [
     `select cv.rang, ca.* from ${dbid}_capacites_voies as cv`,

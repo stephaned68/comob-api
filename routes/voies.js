@@ -59,7 +59,7 @@ router.get('/:ds/:profile', (req, res, next) => {
 
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
-  const profile = req.params.profile;
+  const profile = decodeURI(req.params.profile);
 
   const sql = [
     `select vo.* from ${dbid}_voies_profils as vp`,
