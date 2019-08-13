@@ -23,10 +23,14 @@ router.get('/:ds', (req, res, next) => {
     for (const family of families) {
       familyIn += `,'${family}'`;
     }
-    familyIn = ` where famille in (${familyIn.slice(1)})`;
+    familyIn = `where famille in (${familyIn.slice(1)})`;
   }
 
-  const sql = `select * from ${dbid}_profils` + familyIn;
+  const sql = [
+    `select * from ${dbid}_profils`,
+    `inner join ${dbid}_familles as fa on ${dbid}_profils.famille = fa.famille`,
+    familyIn
+  ].join(" ");
 
   conn.connect(function (err) {
     if (err) throw err;
