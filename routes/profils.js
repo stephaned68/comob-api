@@ -16,6 +16,8 @@ router.get('/:ds', (req, res, next) => {
   const dbid = req.params.ds;
   const conn = dbConnect.getConn(dbid);
 
+  let wheres = [];
+
   const familyList = req.query.family || '';
   let familyIn = '';
   if (familyList !== '') {
@@ -23,15 +25,27 @@ router.get('/:ds', (req, res, next) => {
     for (const family of families) {
       familyIn += `,'${family}'`;
     }
-    familyIn = `where ${dbid}_profils.famille in (${familyIn.slice(1)})`;
+    wheres.push(`${dbid}_profils.famille in (${familyIn.slice(1)})`);
+  }
+
+  let type = req.query.type || '';
+  if (type !== '') {
+    wheres.push(`type='${type}'`);
+  }
+
+  let where = '';
+  if (wheres.length !== 0) {
+    where = 'where ' + wheres.join(' and ');
   }
 
   const sql = [
     `select * from ${dbid}_profils`,
     `inner join ${dbid}_familles as fa on ${dbid}_profils.famille = fa.famille`,
-    familyIn,
+    where,
     `order by profil`
   ].join(" ");
+
+  console.log(sql);
 
   conn.connect(function (err) {
     if (err) throw err;
