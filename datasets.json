@@ -1,13 +1,19 @@
 [
   {
     "dbid": "cof",
-    "name": "Chroniques Oubliées Fantasy",
+    "name": "Fantasy",
+    "font": "",
+    "colors": {}
+  },
+  {
+    "dbid": "coc",
+    "name": "Contemporain",
     "font": "",
     "colors": {}
   },
   {
     "dbid": "cocy",
-    "name": "Chroniques Oubliées Cyberpunk",
+    "name": "Cyberpunk",
     "font": "",
     "colors": {}
   }

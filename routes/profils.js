@@ -45,8 +45,6 @@ router.get('/:ds', (req, res, next) => {
     `order by profil`
   ].join(" ");
 
-  console.log(sql);
-
   conn.connect(function (err) {
     if (err) throw err;
     conn.query(sql, function (err, result) {
