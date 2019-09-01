@@ -8,8 +8,8 @@ const router = express.Router();
 const dbConnect = require('../dbconnect');
 
 /**
- * Route : /paths/{:dataset}/?type={1|2|racial|prestige}
- * Return the racial or prestige paths
+ * Route : /paths/{:dataset}/?type=xxxxx
+ * Return the paths for a given special type
  */
 router.get('/:ds', (req, res, next) => {
 
@@ -19,14 +19,6 @@ router.get('/:ds', (req, res, next) => {
   let type = req.query.type || '';
 
   if (type === '') throw 'Need type=? on the URL';
-
-  if (type !== "1" && type !== "2") {
-    types = {
-      "racial": "1",
-      "prestige": "2"
-    };
-    type = types[type.toLowerCase()];
-  }
 
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,

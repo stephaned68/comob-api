@@ -9,6 +9,7 @@ const cors = require('cors');
  * Router modules
  */
 const datasetRoutes = require('./routes/datasets');
+const typesRoutes = require('./routes/types');
 const familiesRoutes = require('./routes/familles');
 const profilesRoutes = require('./routes/profils');
 const pathsRoutes = require('./routes/voies');
@@ -23,6 +24,11 @@ app.use(cors());
  * Declare the datasets route
  */
 app.use('/datasets', datasetRoutes);
+
+/**
+ * Declare the types route
+ */
+app.use('/types', typesRoutes);
 
 /**
  * Declare the families routes
