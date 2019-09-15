@@ -54,9 +54,12 @@ router.get('/:ds/:profile', (req, res, next) => {
   const profile = decodeURI(req.params.profile);
 
   const sql = [
-    `select vo.* from ${dbid}_voies_profils as vp`,
+    `select vo.*,tv.type_voie_intitule`,
+    `from ${dbid}_voies_profils as vp`,
     `inner join ${dbid}_voies as vo on vp.voie = vo.voie`,
-    `where vp.profil = ?`
+    `left join ${dbid}_types_voie as tv on vo.type = tv.type_voie`,
+    `where vp.profil = ?`,
+    `order by vo.type, vo.voie`
   ].join(" ");
 
   conn.connect(function (err) {
