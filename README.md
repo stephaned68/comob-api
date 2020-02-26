@@ -26,8 +26,10 @@ Returns the list of all profiles for a given dataset (:ds)
     /profiles/:ds/?family=:family1,:family2
 
 Returns the list of profiles for a given dataset (:ds) and the given family ids (:family1, :family2, etc...)
-/paths/
+/paths/:ds/?type=:type
+Return the list of paths for a given dataset (:ds) special type (:type)
+/paths
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0MjY4MDAxNzcsMTk5ODM5MDAwLC0xMD
-g4MzQ2ODgwLDEzODkzMjQxNzgsMjI0MjY5MTA4XX0=
+eyJoaXN0b3J5IjpbLTcwNjY4NzA5MywxOTk4MzkwMDAsLTEwOD
+gzNDY4ODAsMTM4OTMyNDE3OCwyMjQyNjkxMDhdfQ==
 -->
