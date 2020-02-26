@@ -9,10 +9,14 @@ Returns the list of datasets
 
     /types/paths/:ds
     
-Returns the list of paths types
+Returns the list of paths types for the 
+
+    /types/abilities/:ds
+
+Returns
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjc0ODExMDA0LC0xMDg4MzQ2ODgwLDEzOD
+eyJoaXN0b3J5IjpbOTE0NzY3ODEyLC0xMDg4MzQ2ODgwLDEzOD
 kzMjQxNzgsMjI0MjY5MTA4XX0=
 -->
