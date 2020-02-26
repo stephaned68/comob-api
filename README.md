@@ -19,10 +19,10 @@ Returns the list of ability types for a given dataset (:ds)
 
 Returns the list of profile families for a given dataset (:ds)
 
-/
+/profiles/:ds?family
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk5ODM5MDAwLC0xMDg4MzQ2ODgwLDEzOD
-kzMjQxNzgsMjI0MjY5MTA4XX0=
+eyJoaXN0b3J5IjpbLTQ5OTA0ODI5OSwxOTk4MzkwMDAsLTEwOD
+gzNDY4ODAsMTM4OTMyNDE3OCwyMjQyNjkxMDhdfQ==
 -->
