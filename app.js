@@ -14,6 +14,8 @@ const familiesRoutes = require('./routes/familles');
 const profilesRoutes = require('./routes/profils');
 const pathsRoutes = require('./routes/voies');
 const abilitiesRoutes = require('./routes/capacites');
+const categoriesRoutes = require('./routes/categories');
+const equipmentRoutes = require('./routes/equipements');
 
 /**
  * Add the CORS middleware
@@ -21,12 +23,12 @@ const abilitiesRoutes = require('./routes/capacites');
 app.use(cors());
 
 /**
- * Declare the datasets route
+ * Declare the datasets routes
  */
 app.use('/datasets', datasetRoutes);
 
 /**
- * Declare the types route
+ * Declare the types routes
  */
 app.use('/types', typesRoutes);
 
@@ -61,7 +63,7 @@ app.use('/types', typesRoutes);
 });
 
 /**
- * Declare the abilities route
+ * Declare the abilities routes
  */
 [
   '/capacites',
@@ -69,5 +71,15 @@ app.use('/types', typesRoutes);
 ].forEach(function (path) {
   app.use(path, abilitiesRoutes);
 });
+
+/**
+ * Declare the categories routes
+ */
+app.use('/categories', categoriesRoutes);
+
+/**
+ * Declare the equipments routes
+ */
+app.use('/equipments', equipmentRoutes);
 
 module.exports = app;

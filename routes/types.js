@@ -39,7 +39,8 @@ router.get(
           res.status(200).json({
             rs: result
           });
-        })
+          conn.end();
+        });
     });
 
   });

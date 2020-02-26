@@ -2,19 +2,19 @@
   {
     "dbid": "cof",
     "name": "Fantasy",
-    "font": "",
-    "colors": {}
+    "showAbilities": [ 
+      { "type": "epic", "label": "Epiques" }
+    ],
+    "currency": "pa"
   },
   {
     "dbid": "coc",
     "name": "Contemporain",
-    "font": "",
-    "colors": {}
+    "currency": "$"
   },
   {
     "dbid": "cocy",
     "name": "Cyberpunk",
-    "font": "",
-    "colors": {}
+    "currency": "ny"
   }
 ]

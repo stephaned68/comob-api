@@ -18,7 +18,7 @@ router.get('/:ds', (req, res, next) => {
 
   let type = req.query.type || '';
 
-  if (type === '') throw 'Need type=? on the URL';
+  if (type === '') throw 'Required URL argument not found';
 
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,
@@ -38,7 +38,8 @@ router.get('/:ds', (req, res, next) => {
         res.status(200).json({
           rs: result
         });
-      })
+        conn.end();
+      });
   });
 
 });
@@ -75,6 +76,7 @@ router.get('/:ds/:profile', (req, res, next) => {
         res.status(200).json({
           rs: result
         });
+        conn.end();
       })
   });
 

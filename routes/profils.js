@@ -52,6 +52,7 @@ router.get('/:ds', (req, res, next) => {
       res.status(200).json({
         rs: result
       });
+      conn.end();
     })
   });
 });
