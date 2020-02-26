@@ -34,8 +34,8 @@ Returns the list of paths for a given dataset (:ds) and special type (:type)
     /paths/:ds/:profile
 
 Returns the list of paths for a given dataset (:ds) and profile (:profile)
-
+/abilities/:ds/
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI0NTc2NjgyOSwxOTk4MzkwMDAsLTEwOD
+eyJoaXN0b3J5IjpbLTUwMDA2OTcxNywxOTk4MzkwMDAsLTEwOD
 gzNDY4ODAsMTM4OTMyNDE3OCwyMjQyNjkxMDhdfQ==
 -->
