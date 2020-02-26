@@ -43,9 +43,14 @@ Returns the list of abilities for a given dataset (:ds) and type (:type) such as
 
 Returns the list of abilities for a given dataset (:ds) and path (:path)
 /categories/:ds
+Returns the list of all main equipment categories for a given dataset (:ds)
 /categories/:ds/:parent
+Returns the list of sub-categories for a given dataset (:ds) and parent category (:parent)
+/equipements
+/equipments/:ds/:parent
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExMTcxNDE2NzMsLTUwMDA2OTcxNywxOT
-k4MzkwMDAsLTEwODgzNDY4ODAsMTM4OTMyNDE3OCwyMjQyNjkx
-MDhdfQ==
+eyJoaXN0b3J5IjpbMTk0NjgyMzk5NiwtNTAwMDY5NzE3LDE5OT
+gzOTAwMCwtMTA4ODM0Njg4MCwxMzg5MzI0MTc4LDIyNDI2OTEw
+OF19
 -->
