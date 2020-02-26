@@ -2,7 +2,11 @@
 NodeJS Express REST API for serving Chroniques Oubliées TTRPG compendium data
 
 ## Available routes
-`/datase`/dataset
+`/dataset`
+Returns the list of datasets as an array of objects
+
+    dbid: 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY3MzQ5MjM4MiwyMjQyNjkxMDhdfQ==
+eyJoaXN0b3J5IjpbLTIwMTM1ODgwNTcsMjI0MjY5MTA4XX0=
 -->
