@@ -34,8 +34,12 @@ Returns the list of paths for a given dataset (:ds) and special type (:type)
     /paths/:ds/:profile
 
 Returns the list of paths for a given dataset (:ds) and profile (:profile)
-/abilities/:ds/
+/abilities/:ds/?type=:type
+Returns the list of abilities for a given dataset (:ds) and type (:type) such as prestige or epic
+/abilities/:ds/:path
+Returns the list of abilities for a given dataset (:ds) and path (:pat
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUwMDA2OTcxNywxOTk4MzkwMDAsLTEwOD
-gzNDY4ODAsMTM4OTMyNDE3OCwyMjQyNjkxMDhdfQ==
+eyJoaXN0b3J5IjpbMjAxNDgzNTg1MywtNTAwMDY5NzE3LDE5OT
+gzOTAwMCwtMTA4ODM0Njg4MCwxMzg5MzI0MTc4LDIyNDI2OTEw
+OF19
 -->
