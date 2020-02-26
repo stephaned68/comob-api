@@ -5,14 +5,14 @@ NodeJS Express REST API for serving Chroniques Oubliées TTRPG compendium data
 
     /dataset
 
-Returns the list of datasets as an array of objects
+Returns the list of datasets
 
     /types/paths/:ds
     
-Returns a list of 
+Returns the list of paths types
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwODgzNDY4ODAsMTM4OTMyNDE3OCwyMj
-QyNjkxMDhdfQ==
+eyJoaXN0b3J5IjpbMjc0ODExMDA0LC0xMDg4MzQ2ODgwLDEzOD
+kzMjQxNzgsMjI0MjY5MTA4XX0=
 -->
