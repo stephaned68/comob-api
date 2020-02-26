@@ -9,10 +9,10 @@ Returns the list of datasets as an array of objects
 
     /types/paths/:ds
     
-Returns a list 
+Returns a list of 
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgyMTUzODMzOSwxMzg5MzI0MTc4LDIyND
-I2OTEwOF19
+eyJoaXN0b3J5IjpbLTEwODgzNDY4ODAsMTM4OTMyNDE3OCwyMj
+QyNjkxMDhdfQ==
 -->
