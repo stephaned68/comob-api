@@ -15,10 +15,14 @@ Returns the list of paths types for a given dataset (:ds)
 
 Returns the list of ability types for a given dataset (:ds)
 
-/families
+    /families/:ds
+
+Returns the list of profile families for a given dataset (:ds)
+
+/
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAzNzExODI2NiwtMTA4ODM0Njg4MCwxMz
-g5MzI0MTc4LDIyNDI2OTEwOF19
+eyJoaXN0b3J5IjpbMTk5ODM5MDAwLC0xMDg4MzQ2ODgwLDEzOD
+kzMjQxNzgsMjI0MjY5MTA4XX0=
 -->
