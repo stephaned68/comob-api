@@ -7,14 +7,18 @@ const router = express.Router();
 
 const dbConnect = require('../dbconnect');
 
+const trace = require('../trace');
+
 /**
- * Route: /profiles/{:dataset}
- * Return list of profiles for a dataset
+ * Route: /profiles/{:dataset}/?family=xxxx,xxxx,xxxx&type=xxxx
+ * Return list of profiles for a dataset, filtering for :
+ *   - an optional comma-separated list of families
+ *   - and/or a type of profile
  */
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getConn(dbid);
+  const conn = dbConnect.getPool(dbid);
 
   let wheres = [];
 
@@ -25,7 +29,7 @@ router.get('/:ds', (req, res, next) => {
     for (const family of families) {
       familyIn += `,'${family}'`;
     }
-    wheres.push(`${dbid}_profils.famille in (${familyIn.slice(1)})`);
+    wheres.push(`pr.famille in (${familyIn.slice(1)})`);
   }
 
   let type = req.query.type || '';
@@ -39,21 +43,34 @@ router.get('/:ds', (req, res, next) => {
   }
 
   const sql = [
-    `select * from ${dbid}_profils`,
-    `inner join ${dbid}_familles as fa on ${dbid}_profils.famille = fa.famille`,
+    'select',
+    [
+      'pr.profil as profil',
+      'pr.nom as nom',
+      'pr.description as description',
+      'json_object("id", fa.famille, "libelle", fa.description) as famille'
+    ].join(','),
+    `from ${dbid}_profils as pr`,
+    `inner join ${dbid}_familles as fa on pr.famille = fa.famille`,
     where,
     `order by profil`
   ].join(" ");
 
-  conn.connect(function (err) {
+  trace.output(sql);
+  
+  conn.query(sql, function (err, result) {
+    conn.end();
     if (err) throw err;
-    conn.query(sql, function (err, result) {
-      if (err) throw err;
+    if (result.length == 0) {
+      res.sendStatus(404);
+    } else {
+      result.forEach(dataRow => {
+        dataRow.famille = JSON.parse(dataRow.famille);
+      });
       res.status(200).json({
         rs: result
       });
-      conn.end();
-    })
+    }
   });
 });
 

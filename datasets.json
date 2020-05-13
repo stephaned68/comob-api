@@ -5,16 +5,28 @@
     "showAbilities": [ 
       { "type": "epic", "label": "Epiques" }
     ],
-    "currency": "pa"
+    "currency": "pa",
+	"sag": {
+	  "short": "sag",
+	  "long": "sagesse"
+	}
   },
   {
     "dbid": "coc",
     "name": "Contemporain",
-    "currency": "$"
+    "currency": "$",
+	"sag": {
+	  "short": "per",
+	  "long": "perception"
+	}
   },
   {
     "dbid": "cocy",
     "name": "Cyberpunk",
-    "currency": "ny"
+    "currency": "ny",
+	"sag": {
+	  "short": "per",
+	  "long": "perception"
+	}
   }
 ]

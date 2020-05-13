@@ -1,5 +1,5 @@
 /**
- * Categories routes
+ * Races routes
  */
 
 const express = require('express');
@@ -10,22 +10,30 @@ const dbConnect = require('../dbconnect');
 const trace = require('../trace');
 
 /**
- * Route: /categories/{:dataset}
- * Return list of categories for a dataset
+ * Route : /races/{:dataset}/?types=xxxx,xxxx,xxxx
+ * Return the races for a given list of types
  */
 router.get('/:ds', (req, res, next) => {
-
+  
   const dbid = req.params.ds;
   const conn = dbConnect.getPool(dbid);
+
+  where = '';
+
+  const typeList = req.query.types || '';
+  let typeIn = '';
+  if (typeList !== '') {
+    types = typeList.split(',');
+    for (const type of types) {
+      typeIn += `,'${type}'`;
+    }
+    where = `where ${dbid}_races.type_race in (${typeIn.slice(1)})`;
+  }
+
   const sql = [
-    `select * from ${dbid}_categories_equipement`,
-    "where parent is null or parent = ''",
-    'order by',
-    [
-      'sequence',
-      'code'
-    ].join(", ")
-  ].join(" ");
+    `select * from ${dbid}_races`,
+    where
+  ].join(' ');
 
   trace.output(sql);
   
@@ -44,36 +52,32 @@ router.get('/:ds', (req, res, next) => {
 });
 
 /**
- * Roue: /categories/{:dataset}/{:parent}
- * Return list of sub-categories for a dataset and parent category
+ * Route : /races/{:dataset}/{:race}
+ * Return a race record
  */
-router.get('/:ds/:parent', (req, res, next) => {
+router.get('/:ds/:race', (req, res, next) => {
 
   const dbid = req.params.ds;
   const conn = dbConnect.getPool(dbid);
-  const parent = req.params.parent;
+
+  const race = req.params.race || '';
+  if (race === '') throw 'Required URL argument not found';
 
   const sql = [
-    `select * from ${dbid}_categories_equipement`,
-    'where parent = ?',
-    "and sequence < '90000'",
-    'order by',
-    [
-      'sequence',
-      'code'
-    ].join(", ")
-  ].join(" ");
+    `select * from ${dbid}_races`,
+    'where race = ?'
+  ].join(' ');
 
   trace.output(sql);
-  
+
   conn.query({
       sql: sql,
       values: [
-        parent
+        race
       ]
-    }, 
+    },
     function (err, result) {
-      conn.end();  
+      conn.end();
       if (err) throw err;
       if (result.length == 0) {
         res.sendStatus(404);
@@ -84,6 +88,7 @@ router.get('/:ds/:parent', (req, res, next) => {
       }
     }
   );
+
 });
 
 module.exports = router;

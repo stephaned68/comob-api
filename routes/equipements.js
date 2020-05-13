@@ -7,18 +7,28 @@ const router = express.Router();
 
 const dbConnect = require('../dbconnect');
 
+const trace = require('../trace');
+
 /**
  * Route : /equipments/{:dataset}/?profile=xxxx
- * Return the base equipment for a give profile
+ * Return the base equipment for a given profile
  */
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getConn(dbid);
+  const conn = dbConnect.getPool(dbid);
 
   let profile = req.query.profile || '';
 
   if (profile === '') throw 'Required URL argument not found';
+
+  let props = '';
+  const serialized = (Object.keys(req.query).indexOf('serialized') != -1);
+  if (serialized) {
+    props = "concat_ws(' : ', pr.intitule, pe.valeur)";
+  } else {
+    props = "json_object('id', pr.code, 'nom', pr.intitule, 'valeur', pe.valeur)";
+  }
 
   const sql = [
     'select',
@@ -27,12 +37,12 @@ router.get('/:ds', (req, res, next) => {
       'eq.designation as designation',
       'ep.nombre as nombre',
       'ep.special as special',
-      'group_concat(concat_ws(" : ", pr.intitule, pe.valeur) separator "~") as props'
+      `group_concat(${props} separator '~') as props`
     ].join(", "),
     `from ${dbid}_equipement_profils as ep`,
     `inner join ${dbid}_equipement as eq on eq.code = ep.equipement`,
     `left join ${dbid}_equipement_proprietes as pe on pe.code_equipement = eq.code`,
-    `left join ${dbid}_proprietes_equipement as pr on pe.code_propriete = pr.code`,
+    `left join ${dbid}_proprietes_equipement as pr on pr.code = pe.code_propriete`,
     'where ep.profil = ?',
     'group by',
     [
@@ -47,23 +57,36 @@ router.get('/:ds', (req, res, next) => {
     ].join(", ")
   ].join(" ");
 
-  conn.connect(function (err) {
-    if (err) throw err;
-    conn.query({
-        sql: sql,
-        values: [
-          profile
-        ]
-      },
-      function (err, result) {
-        if (err) throw err;
+  trace.output(sql);
+
+  conn.query({
+      sql: sql,
+      values: [
+        profile
+      ]
+    },
+    function (err, result) {
+      conn.end();
+      if (err) throw err;
+      if (result.length == 0) {
+        res.sendStatus(404);
+      } else {
+        if (!serialized) {
+        result.forEach(dataRow => {
+          dataRow.props = dataRow.props.split('~');
+          dataRow.props.forEach((item, ix) => {
+            const prop = JSON.parse(item);
+            if (prop.id !== null && prop.nom !== null && prop.valeur !== null) dataRow.props[ix] = prop;
+            else dataRow.props.splice(ix, 1);
+          });
+        });
+        }
         res.status(200).json({
           rs: result
         });
-        conn.end();
-      });
-  });
-
+      }
+    }
+  );
 });
 
 /**
@@ -73,8 +96,19 @@ router.get('/:ds', (req, res, next) => {
 router.get('/:ds/:category', (req, res, next) => {
   
   const dbid = req.params.ds;
-  const conn = dbConnect.getConn(dbid);
+  const conn = dbConnect.getPool(dbid);
   const category = decodeURI(req.params.category);
+
+  let props = '';
+  let maitrise_par = '';
+  const serialized = (Object.keys(req.query).indexOf('serialized') !== -1);
+  if (serialized) {
+    props = "concat_ws(' : ', pe.intitule, ep.valeur)";
+    maitrise_par = "pr.nom";
+  } else {
+    props = "json_object('id', pe.code, 'nom', pe.intitule, 'valeur', ep.valeur)";
+    maitrise_par = "json_object('id', pr.profil, 'nom', pr.nom)";
+  }
 
   const sql = [
     'select',
@@ -84,45 +118,69 @@ router.get('/:ds/:category', (req, res, next) => {
       'ca.libelle as categorie',
       'eq.prix as prix',
       'eq.notes as notes',
-      "group_concat(concat_ws(' : ', pe.intitule, ep.valeur) separator '~')as props"
+      `group_concat(distinct ${props} separator '~') as props`,
+      `group_concat(distinct ${maitrise_par} separator '~') as maitrise_par`
     ].join(", "),
     `from ${dbid}_equipement as eq`,
     `inner join ${dbid}_categories_equipement as ca on eq.categorie = ca.code`,
     `left join ${dbid}_equipement_proprietes as ep on eq.code = ep.code_equipement`,
     `left join ${dbid}_proprietes_equipement as pe on ep.code_propriete = pe.code`,
+    `left join ${dbid}_profils_maitrises as pm on pm.equipement = eq.code`,
+    `inner join ${dbid}_profils as pr on pr.profil = pm.profil`,
     'where eq.categorie = ?',
     'group by',
     [
       'ca.code',
-      'eq.code',
+      'eq.code'
     ].join(", "),
     'order by',
     [
       'ca.parent',
       'ca.sequence',
       'ca.code',
+      'eq.sequence',
       'eq.code',
       'pe.code'
     ].join(", ")
   ].join(" ");
 
-  conn.connect(function (err) {
-    if (err) throw err;
-    conn.query({
-        sql: sql,
-        values: [
-          category
-        ]
-      },
-      function (err, result) {
-        if (err) throw err;
+  trace.output(sql);
+
+  conn.query({
+      sql: sql,
+      values: [
+        category
+      ]
+    },
+    function (err, result) {
+      conn.end();
+      if (err) throw err;
+      if (result.length == 0) {
+        res.sendStatus(404);
+      } else {
+        if (!serialized) {
+          result.forEach(dataRow => {
+            dataRow.props = dataRow.props.split('~');
+            dataRow.props.forEach((item, ix) => {
+              dataRow.props[ix] = JSON.parse(item);
+            });
+            if (dataRow.props.length == 1 
+              && dataRow.props[0].id == null) {
+              dataRow.props = [];
+            }
+            dataRow.maitrise_par = dataRow.maitrise_par.split('~');
+            dataRow.maitrise_par.forEach((item, ix) => {
+              dataRow.maitrise_par[ix] = JSON.parse(item);
+            });
+          });
+        }
         res.status(200).json({
           rs: result
         });
-        conn.end();
-      })
-  });
-
+      }
+    }
+  );
+  
 });
 
 module.exports = router;

@@ -4,6 +4,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const colors = require('colors');
 
 /**
  * Router modules
@@ -16,6 +17,10 @@ const pathsRoutes = require('./routes/voies');
 const abilitiesRoutes = require('./routes/capacites');
 const categoriesRoutes = require('./routes/categories');
 const equipmentRoutes = require('./routes/equipements');
+const racesRoutes = require('./routes/races');
+const traitsRoutes = require('./routes/traits');
+
+const mode = process.env.NODE_ENV || 'development';
 
 /**
  * Add the CORS middleware
@@ -23,9 +28,22 @@ const equipmentRoutes = require('./routes/equipements');
 app.use(cors());
 
 /**
+ * Add the morgan logger middleware
+ */
+if (mode === 'development') {
+  const morgan = require('morgan');
+  app.use(morgan('combined'));
+}
+
+/**
  * Declare the datasets routes
  */
-app.use('/datasets', datasetRoutes);
+[
+  '/',
+  '/datasets'
+].forEach(function (path) {
+  app.use(path, datasetRoutes);
+});
 
 /**
  * Declare the types routes
@@ -81,5 +99,15 @@ app.use('/categories', categoriesRoutes);
  * Declare the equipments routes
  */
 app.use('/equipments', equipmentRoutes);
+
+/**
+ * Declare the races routes
+ */
+app.use('/races', racesRoutes);
+
+/**
+ * Declare the traits routes
+ */
+app.use('/traits', traitsRoutes);
 
 module.exports = app;
