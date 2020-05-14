@@ -6,15 +6,22 @@ const http = require('http');
 const dotenv = require('dotenv');
 const app = require('./app');
 
-const result = dotenv.config({ debug: process.env.DEBUG });
-if (result.error) {
-  throw result.error
-}
-console.log(result.parsed);
+const pkg = require('./package.json');
 
-const ip = process.env.IP || '127.0.0.1';
+const result = dotenv.config({ 
+  silent: true,
+  debug: process.env.DEBUG
+});
+if (!result.error) {
+  console.log("Parsed environment... ", result.parsed);
+}
+
+// Defaults to alwaysdata IP & PORT values
+const ip = process.env.IP || '0.0.0.0';
 const port = process.env.PORT || 8100;
 
 const server = http.createServer(app);
 
-server.listen(port, ip);
+server.listen(port, ip, () => {
+  console.log(`Started server v${pkg.version} on ${ip}:${port}...`);
+});
