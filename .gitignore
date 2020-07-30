@@ -1,5 +1,4 @@
 .vscode/
 node_modules/
-dbconfig.json
-dbconfig.web.json
+config/local.json
 .env
