@@ -2,31 +2,34 @@
   {
     "dbid": "cof",
     "name": "Fantasy",
-    "showAbilities": [ 
-      { "type": "epic", "label": "Epiques" }
+    "showAbilities": [
+      {
+        "type": "epic",
+        "label": "Epiques"
+      }
     ],
     "currency": "pa",
-	"sag": {
-	  "short": "sag",
-	  "long": "sagesse"
-	}
+    "sag": {
+      "short": "sag",
+      "long": "sagesse"
+    }
   },
   {
     "dbid": "coc",
     "name": "Contemporain",
     "currency": "$",
-	"sag": {
-	  "short": "per",
-	  "long": "perception"
-	}
+    "sag": {
+      "short": "per",
+      "long": "perception"
+    }
   },
   {
     "dbid": "cocy",
     "name": "Cyberpunk",
     "currency": "ny",
-	"sag": {
-	  "short": "per",
-	  "long": "perception"
-	}
+    "sag": {
+      "short": "per",
+      "long": "perception"
+    }
   }
 ]
