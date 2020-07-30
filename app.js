@@ -27,6 +27,14 @@ const mode = process.env.NODE_ENV || 'development';
 app.use(cors());
 
 /**
+ * Add the helmet middleware
+ */
+if (mode !== 'development') {
+  const helmet = require('helmet');
+  app.use(helmet());
+}
+
+/**
  * Add the morgan logger middleware
  */
 if (mode === 'development') {
@@ -37,10 +45,7 @@ if (mode === 'development') {
 /**
  * Declare the datasets routes
  */
-[
-  '/',
-  '/datasets'
-].forEach(function (path) {
+['/', '/datasets'].forEach(function (path) {
   app.use(path, datasetRoutes);
 });
 
@@ -52,42 +57,22 @@ app.use('/types', typesRoutes);
 /**
  * Declare the families routes
  */
-[
-  '/familles',
-  '/families'
-].forEach(function (path) {
-  app.use(path, familiesRoutes);
-});
+app.use('/families', familiesRoutes);
 
 /**
  * Declare the profiles routes
  */
-[
-  '/profils',
-  '/profiles'
-].forEach(function (path) {
-  app.use(path, profilesRoutes);
-});
+app.use('/profiles', profilesRoutes);
 
 /**
  * Declare the paths routes
  */
-[
-  '/voies',
-  '/paths'
-].forEach(function (path) {
-  app.use(path, pathsRoutes);
-});
+app.use('/paths', pathsRoutes);
 
 /**
  * Declare the abilities routes
  */
-[
-  '/capacites',
-  '/abilities'
-].forEach(function (path) {
-  app.use(path, abilitiesRoutes);
-});
+app.use('/abilities', abilitiesRoutes);
 
 /**
  * Declare the categories routes
