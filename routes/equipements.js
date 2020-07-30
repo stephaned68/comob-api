@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const dbConnect = require('../dbconnect');
+const db = require('../dbconnect');
 
 const trace = require('../trace');
 
@@ -16,8 +16,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getPool(dbid);
-
+  
   let profile = req.query.profile || '';
 
   if (profile === '') throw 'Required URL argument not found';
@@ -59,14 +58,13 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
 
-  conn.query({
+  db.query({
       sql: sql,
       values: [
         profile
       ]
     },
     function (err, result) {
-      conn.end();
       if (err) throw err;
       if (result.length == 0) {
         res.sendStatus(404);
@@ -96,7 +94,6 @@ router.get('/:ds', (req, res, next) => {
 router.get('/:ds/:category', (req, res, next) => {
   
   const dbid = req.params.ds;
-  const conn = dbConnect.getPool(dbid);
   const category = decodeURI(req.params.category);
 
   let props = '';
@@ -146,14 +143,13 @@ router.get('/:ds/:category', (req, res, next) => {
 
   trace.output(sql);
 
-  conn.query({
+  db.query({
       sql: sql,
       values: [
         category
       ]
     },
     function (err, result) {
-      conn.end();
       if (err) throw err;
       if (result.length == 0) {
         res.sendStatus(404);

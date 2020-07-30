@@ -1,18 +1,10 @@
 const mysql = require('mysql');
+const config = require('config');
 
-const dbConfig = require('./dbconfig.json');
+const connection = mysql.createConnection(config.get('db'));
 
-module.exports = {
-  
-  getConn: function(dbid) {
-    return mysql.createConnection(dbConfig[dbid]);
-  },
+connection.connect(function(err) {
+  if (err) throw err;
+});
 
-  getPool: function(dbid) {
-    return mysql.createPool({
-      connectionLimit: 10,
-      ...dbConfig[dbid]
-    });
-  },
-
-};
+module.exports = connection;

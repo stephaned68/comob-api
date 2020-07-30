@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const dbConnect = require('../dbconnect');
+const db = require('../dbconnect');
 
 const trace = require('../trace');
 
@@ -18,8 +18,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getPool(dbid);
-
+  
   const race = req.query.race || '';
   const profile = req.query.profile || '';
 
@@ -59,12 +58,11 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
   
-  conn.query({
+  db.query({
       sql: sql,
       values: []
     },
     function (err, result) {
-      conn.end();
       if (err) throw err;
       if (result.length == 0) {
         res.sendStatus(404);

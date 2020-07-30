@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const dbConnect = require('../dbconnect');
+const db = require('../dbconnect');
 
 const trace = require('../trace');
 
@@ -21,8 +21,7 @@ router.get(
   ], (req, res, next) => {
 
     const dbid = req.params.ds;
-    const conn = dbConnect.getPool(dbid);
-
+    
     const tables = {
       "paths": `${dbid}_types_voie`,
       "abilities": `${dbid}_types_capacite`,
@@ -35,11 +34,10 @@ router.get(
 
     trace.output(sql);
 
-    conn.query({
+    db.query({
         sql: sql
       },
       function (err, result) {
-        conn.end();
         if (err) throw err;
         if (result.length == 0) {
           res.sendStatus(404);

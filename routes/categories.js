@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const dbConnect = require('../dbconnect');
+const db = require('../dbconnect');
 
 const trace = require('../trace');
 
@@ -16,7 +16,6 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getPool(dbid);
   const sql = [
     `select * from ${dbid}_categories_equipement`,
     "where parent is null or parent = ''",
@@ -29,8 +28,7 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
   
-  conn.query(sql, function (err, result) {
-    conn.end();
+  db.query(sql, function (err, result) {
     if (err) throw err;
     if (result.length == 0) {
       res.sendStatus(404);
@@ -50,7 +48,6 @@ router.get('/:ds', (req, res, next) => {
 router.get('/:ds/:parent', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getPool(dbid);
   const parent = req.params.parent;
 
   const sql = [
@@ -66,14 +63,13 @@ router.get('/:ds/:parent', (req, res, next) => {
 
   trace.output(sql);
   
-  conn.query({
+  db.query({
       sql: sql,
       values: [
         parent
       ]
     }, 
     function (err, result) {
-      conn.end();  
       if (err) throw err;
       if (result.length == 0) {
         res.sendStatus(404);

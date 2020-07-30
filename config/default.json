@@ -1,0 +1,8 @@
+{
+    "db": {
+        "host": "mysql-co-api.alwaysdata.net",
+        "user": "co-api",
+        "password": "F0rty!tw0",
+        "database": "co-api_comobdb"
+    }
+}

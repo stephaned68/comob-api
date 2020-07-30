@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const dbConnect = require('../dbconnect');
+const db = require('../dbconnect');
 
 const trace = require('../trace');
 
@@ -16,13 +16,11 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
 
   const dbid = req.params.ds;
-  const conn = dbConnect.getPool(dbid);
   const sql = `select * from ${dbid}_familles`;
 
   trace.output(sql);
 
-  conn.query(sql, function (err, result) {
-    conn.end();
+  db.query(sql, function (err, result) {
     if (err) throw err;
     if (result.length == 0) {
       res.sendStatus(404);
