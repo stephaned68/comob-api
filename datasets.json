@@ -12,6 +12,39 @@
     "sag": {
       "short": "sag",
       "long": "sagesse"
+    },
+    "colors": {
+      "title": "#CC9966"
+    }
+  },
+  {
+    "dbid": "cota",
+    "name": "Terre d'Arran",
+    "showAbilities": [
+      {
+        "type": "tmag",
+        "label": "Talents magiques"
+      }
+    ],
+    "currency": "pa",
+    "sag": {
+      "short": "sag",
+      "long": "sagesse"
+    },
+    "colors": {
+      "title": "#87CEFA"
+    }
+  },
+  {
+    "dbid": "coct",
+    "name": "Cthulhu",
+    "currency": "$",
+    "sag": {
+      "short": "per",
+      "long": "perception"
+    },
+    "colors": {
+      "title": "#66CC99"
     }
   },
   {
@@ -21,6 +54,9 @@
     "sag": {
       "short": "per",
       "long": "perception"
+    },
+    "colors": {
+      "title": "#FBF2B7"
     }
   },
   {
@@ -30,6 +66,10 @@
     "sag": {
       "short": "per",
       "long": "perception"
+    },
+    "colors": {
+      "title": "#9966CC",
+      "text": "#fff"
     }
   }
 ]

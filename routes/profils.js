@@ -16,7 +16,6 @@ const trace = require('../trace');
  *   - and/or a type of profile
  */
 router.get('/:ds', (req, res, next) => {
-
   const dbid = req.params.ds;
 
   let wheres = [];
@@ -47,27 +46,27 @@ router.get('/:ds', (req, res, next) => {
       'pr.profil as profil',
       'pr.nom as nom',
       'pr.description as description',
-      'json_object("id", fa.famille, "libelle", fa.description) as famille'
+      'json_object("id", fa.famille, "libelle", fa.description) as famille',
     ].join(','),
     `from ${dbid}_profils as pr`,
     `inner join ${dbid}_familles as fa on pr.famille = fa.famille`,
     where,
-    `order by profil`
-  ].join(" ");
+    `order by profil`,
+  ].join(' ');
 
   trace.output(sql);
-  
+
   db.query(sql, function (err, result) {
     // db.end();
     if (err) throw err;
     if (result.length == 0) {
       res.sendStatus(404);
     } else {
-      result.forEach(dataRow => {
+      result.forEach((dataRow) => {
         dataRow.famille = JSON.parse(dataRow.famille);
       });
       res.status(200).json({
-        rs: result
+        rs: result,
       });
     }
   });
