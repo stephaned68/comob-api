@@ -7,10 +7,12 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
+const { dsExists } = require('../lib');
+
 const trace = require('../trace');
 
 /**
- * Routes : 
+ * Routes :
  * /abilities/{:dataset}/?type=xxxxx
  * Return abilities of a given type
  * /abilities/{:dataset}/?profile=xxxxx
@@ -19,9 +21,11 @@ const trace = require('../trace');
  * Return abilities for a given race
  */
 router.get('/:ds', (req, res, next) => {
-
   const dbid = req.params.ds;
-  
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   let type = req.query.type || '';
   let profile = req.query.profile || '';
   let race = req.query.race || '';
@@ -38,8 +42,8 @@ router.get('/:ds', (req, res, next) => {
   if (type !== '') {
     sql = [
       `select ca.* from ${dbid}_capacites as ca`,
-      `where ca.type = '${type}'`
-    ].join(" ");
+      `where ca.type = '${type}'`,
+    ].join(' ');
   }
 
   if (profile !== '') {
@@ -59,17 +63,17 @@ router.get('/:ds', (req, res, next) => {
           "when 1 then 'de la '",
           "when 2 then 'de l\u2019'",
           "when 3 then 'des '",
-          'end as voie_deladu'
+          'end as voie_deladu',
         ].join(' '),
-        'vo.notes as voie_notes'
-      ].join(", "),
+        'vo.notes as voie_notes',
+      ].join(', '),
       `from ${dbid}_voies_profils as vp`,
       `join ${dbid}_profils as pr on pr.profil = vp.profil`,
       `join ${dbid}_capacites_voies as cv on cv.voie = vp.voie`,
       `join ${dbid}_voies as vo on vo.voie = cv.voie`,
       `join ${dbid}_capacites as ca on ca.capacite = cv.capacite`,
       `where pr.profil = '${profile}'`,
-      'order by vp.profil, vp.voie, cv.rang'
+      'order by vp.profil, vp.voie, cv.rang',
     ].join(' ');
   }
 
@@ -79,20 +83,21 @@ router.get('/:ds', (req, res, next) => {
       [
         'ca.nom as capacite',
         'ca.description as description',
-        'ca.limitee as limitation'
-      ].join(", "),
+        'ca.limitee as limitation',
+      ].join(', '),
       `from ${dbid}_races_capacites as cr`,
       `join ${dbid}_capacites as ca on ca.capacite = cr.capacite`,
       `where cr.race = '${race}'`,
-      'order by limitation, capacite'
+      'order by limitation, capacite',
     ].join(' ');
   }
 
   trace.output(sql);
-  
-  db.query({
+
+  db.query(
+    {
       sql: sql,
-      values: []
+      values: [],
     },
     function (err, result) {
       if (err) throw err;
@@ -100,7 +105,7 @@ router.get('/:ds', (req, res, next) => {
         res.sendStatus(404);
       } else {
         res.status(200).json({
-          rs: result
+          rs: result,
         });
       }
     }
@@ -112,8 +117,10 @@ router.get('/:ds', (req, res, next) => {
  * Return abilities for a given path
  */
 router.get('/:ds/:path', (req, res, next) => {
-
   const dbid = req.params.ds;
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
   const path = decodeURI(req.params.path);
 
   const sql = [
@@ -128,23 +135,22 @@ router.get('/:ds/:path', (req, res, next) => {
         "when 1 then 'de la '",
         "when 2 then 'de l\u2019'",
         "when 3 then 'des '",
-        'end as voie_deladu'
-      ].join(' ')
+        'end as voie_deladu',
+      ].join(' '),
     ].join(', '),
     `from ${dbid}_capacites_voies as cv`,
     `inner join ${dbid}_capacites as ca on cv.capacite = ca.capacite`,
     `inner join ${dbid}_voies as vo on vo.voie = cv.voie`,
     `where cv.voie = ?`,
-    `order by cv.rang`
+    `order by cv.rang`,
   ].join(' ');
 
   trace.output(sql);
-  
-  db.query({
+
+  db.query(
+    {
       sql: sql,
-      values: [
-        path
-      ]
+      values: [path],
     },
     function (err, result) {
       if (err) throw err;
@@ -152,12 +158,11 @@ router.get('/:ds/:path', (req, res, next) => {
         res.sendStatus(404);
       } else {
         res.status(200).json({
-          rs: result
+          rs: result,
         });
       }
     }
-  )
-
+  );
 });
 
 module.exports = router;

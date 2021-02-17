@@ -7,6 +7,8 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
+const { dsExists } = require('../lib');
+
 const trace = require('../trace');
 
 /**
@@ -14,25 +16,26 @@ const trace = require('../trace');
  * Return the paths for a given special type
  */
 router.get('/:ds', (req, res, next) => {
-
   const dbid = req.params.ds;
-  
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   let type = req.query.type || '';
 
   if (type === '') throw 'Required URL argument not found';
 
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,
-    `where vo.type = ?`
+    `where vo.type = ?`,
   ].join(' ');
 
   trace.output(sql);
 
-  db.query({
+  db.query(
+    {
       sql: sql,
-      values: [
-        type
-      ]
+      values: [type],
     },
     function (err, result) {
       if (err) throw err;
@@ -40,12 +43,11 @@ router.get('/:ds', (req, res, next) => {
         res.sendStatus(404);
       } else {
         res.status(200).json({
-          rs: result
+          rs: result,
         });
       }
     }
   );
-
 });
 
 /**
@@ -55,12 +57,15 @@ router.get('/:ds', (req, res, next) => {
  * Return abilities detailed by paths for a profile
  */
 router.get('/:ds/:profile', (req, res, next) => {
-
   const dbid = req.params.ds;
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   const profile = decodeURI(req.params.profile);
 
   let sql = '';
-  const abilitiesFlg = (Object.keys(req.query).indexOf('abilities') != -1);
+  const abilitiesFlg = Object.keys(req.query).indexOf('abilities') != -1;
 
   if (abilitiesFlg) {
     sql = [
@@ -74,11 +79,11 @@ router.get('/:ds/:profile', (req, res, next) => {
           "when 1 then 'de la '",
           "when 2 then 'de l\u2019'",
           "when 3 then 'des '",
-          'end as voie_deladu'
+          'end as voie_deladu',
         ].join(' '),
         'tv.type_voie_intitule',
         'cv.rang as rang',
-        'ca.nom as capacite'
+        'ca.nom as capacite',
       ].join(', '),
       `from ${dbid}_voies_profils as vp`,
       `inner join ${dbid}_profils as pr on pr.profil = vp.profil`,
@@ -87,30 +92,26 @@ router.get('/:ds/:profile', (req, res, next) => {
       `left join ${dbid}_capacites_voies as cv on cv.voie = vo.voie`,
       `inner join ${dbid}_capacites as ca on ca.capacite = cv.capacite`,
       'where vp.profil = ?',
-      'order by vo.type, vo.voie, cv.rang'
+      'order by vo.type, vo.voie, cv.rang',
     ].join(' ');
   } else {
     sql = [
       'select',
-      [
-        'vo.*',
-        'tv.type_voie_intitule'
-      ].join(', '),
+      ['vo.*', 'tv.type_voie_intitule'].join(', '),
       `from ${dbid}_voies_profils as vp`,
       `inner join ${dbid}_voies as vo on vp.voie = vo.voie`,
       `left join ${dbid}_types_voie as tv on vo.type = tv.type_voie`,
       `where vp.profil = ?`,
-      `order by vo.type, vo.voie`
+      `order by vo.type, vo.voie`,
     ].join(' ');
   }
 
   trace.output(sql);
 
-  db.query({
+  db.query(
+    {
       sql: sql,
-      values: [
-        profile
-      ]
+      values: [profile],
     },
     function (err, result) {
       if (err) throw err;
@@ -118,7 +119,7 @@ router.get('/:ds/:profile', (req, res, next) => {
         res.sendStatus(404);
       } else {
         res.status(200).json({
-          rs: result
+          rs: result,
         });
       }
     }

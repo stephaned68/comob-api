@@ -7,6 +7,8 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
+const { dsExists } = require('../lib');
+
 const trace = require('../trace');
 
 /**
@@ -16,9 +18,11 @@ const trace = require('../trace');
  * Return the special traits for a given profile
  */
 router.get('/:ds', (req, res, next) => {
-
   const dbid = req.params.ds;
-  
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   const race = req.query.race || '';
   const profile = req.query.profile || '';
 
@@ -29,38 +33,32 @@ router.get('/:ds', (req, res, next) => {
     throw 'Too many URL arguments passed in';
   }
 
-
   let sql = '';
 
   if (race !== '') {
     sql = [
       'select',
-      [
-        'intitule',
-        'description'
-      ].join(', '),
+      ['intitule', 'description'].join(', '),
       `from ${dbid}_races_traits`,
-      `where race = '${race}'`
+      `where race = '${race}'`,
     ].join(' ');
   }
 
   if (profile !== '') {
     sql = [
       'select',
-      [
-        'intitule',
-        'description'
-      ].join(', '),
+      ['intitule', 'description'].join(', '),
       `from ${dbid}_profils_traits`,
-      `where profil = '${profile}'`
+      `where profil = '${profile}'`,
     ].join(' ');
   }
 
   trace.output(sql);
-  
-  db.query({
+
+  db.query(
+    {
       sql: sql,
-      values: []
+      values: [],
     },
     function (err, result) {
       if (err) throw err;
@@ -68,12 +66,11 @@ router.get('/:ds', (req, res, next) => {
         res.sendStatus(404);
       } else {
         res.status(200).json({
-          rs: result
+          rs: result,
         });
       }
     }
   );
-
 });
 
 module.exports = router;

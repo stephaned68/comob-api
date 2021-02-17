@@ -7,6 +7,8 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
+const { dsExists } = require('../lib');
+
 const trace = require('../trace');
 
 /**
@@ -14,8 +16,11 @@ const trace = require('../trace');
  * Return list of families for a dataset
  */
 router.get('/:ds', (req, res, next) => {
-
   const dbid = req.params.ds;
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   const sql = `select * from ${dbid}_familles`;
 
   trace.output(sql);
@@ -26,11 +31,10 @@ router.get('/:ds', (req, res, next) => {
       res.sendStatus(404);
     } else {
       res.status(200).json({
-        rs: result
+        rs: result,
       });
     }
   });
-  
 });
 
 module.exports = router;

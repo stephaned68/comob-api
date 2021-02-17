@@ -7,6 +7,8 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
+const { dsExists } = require('../lib');
+
 const trace = require('../trace');
 
 /**
@@ -14,9 +16,11 @@ const trace = require('../trace');
  * Return the races for a given list of types
  */
 router.get('/:ds', (req, res, next) => {
-  
   const dbid = req.params.ds;
-  
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   where = '';
 
   const typeList = req.query.types || '';
@@ -29,24 +33,20 @@ router.get('/:ds', (req, res, next) => {
     where = `where ${dbid}_races.type_race in (${typeIn.slice(1)})`;
   }
 
-  const sql = [
-    `select * from ${dbid}_races`,
-    where
-  ].join(' ');
+  const sql = [`select * from ${dbid}_races`, where].join(' ');
 
   trace.output(sql);
-  
+
   db.query(sql, function (err, result) {
     if (err) throw err;
     if (result.length == 0) {
       res.sendStatus(404);
     } else {
       res.status(200).json({
-        rs: result
+        rs: result,
       });
     }
   });
-
 });
 
 /**
@@ -54,24 +54,22 @@ router.get('/:ds', (req, res, next) => {
  * Return a race record
  */
 router.get('/:ds/:race', (req, res, next) => {
-
   const dbid = req.params.ds;
-  
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   const race = req.params.race || '';
   if (race === '') throw 'Required URL argument not found';
 
-  const sql = [
-    `select * from ${dbid}_races`,
-    'where race = ?'
-  ].join(' ');
+  const sql = [`select * from ${dbid}_races`, 'where race = ?'].join(' ');
 
   trace.output(sql);
 
-  db.query({
+  db.query(
+    {
       sql: sql,
-      values: [
-        race
-      ]
+      values: [race],
     },
     function (err, result) {
       if (err) throw err;
@@ -79,12 +77,11 @@ router.get('/:ds/:race', (req, res, next) => {
         res.sendStatus(404);
       } else {
         res.status(200).json({
-          rs: result
+          rs: result,
         });
       }
     }
   );
-
 });
 
 module.exports = router;

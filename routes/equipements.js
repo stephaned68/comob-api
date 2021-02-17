@@ -7,6 +7,8 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
+const { dsExists } = require('../lib');
+
 const trace = require('../trace');
 
 /**
@@ -15,6 +17,9 @@ const trace = require('../trace');
  */
 router.get('/:ds', (req, res, next) => {
   const dbid = req.params.ds;
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
 
   let profile = req.query.profile || '';
 
@@ -86,6 +91,10 @@ router.get('/:ds', (req, res, next) => {
  */
 router.get('/:ds/:category', (req, res, next) => {
   const dbid = req.params.ds;
+  if (!dsExists(dbid)) {
+    throw 'Unknown dataset';
+  }
+
   const category = decodeURI(req.params.category);
 
   let props = '';

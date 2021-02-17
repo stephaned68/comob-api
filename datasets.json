@@ -20,6 +20,7 @@
   {
     "dbid": "cota",
     "name": "Terre d'Arran",
+    "hidden": true,
     "showAbilities": [
       {
         "type": "tmag",
