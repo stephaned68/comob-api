@@ -27,7 +27,9 @@ router.get('/:ds', (req, res, next) => {
 
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,
-    `where vo.type = ?`,
+    type === ' '
+      ? "where vo.type is null or vo.type = ''"
+      : `where vo.type = ?`,
   ].join(' ');
 
   trace.output(sql);
