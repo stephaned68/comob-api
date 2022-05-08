@@ -7,7 +7,7 @@ const router = express.Router();
 
 const db = require('../dbconnect');
 
-const { dsExists } = require('../lib');
+const { dsExists, getDataset } = require('../lib');
 
 const trace = require('../trace');
 
@@ -20,6 +20,7 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
+  const dataset = getDataset(dbid);
 
   const tables = {
     paths: `${dbid}_types_voie`,
@@ -42,6 +43,12 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
+        result = result.filter((p) => {
+          if ((dataset.hidePaths || []).length === 0) return true;
+          return (
+            dataset.hidePaths.findIndex((path) => p.type_voie === path) === -1
+          );
+        });
         res.status(200).json({
           rs: result,
         });

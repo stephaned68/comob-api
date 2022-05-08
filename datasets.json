@@ -8,6 +8,7 @@
         "label": "Epiques"
       }
     ],
+    "hidePaths": [ "prest" ],
     "currency": "pa",
     "sag": {
       "short": "sag",
@@ -71,6 +72,15 @@
     "colors": {
       "title": "#9966CC",
       "text": "#fff"
+    }
+  },
+  {
+    "dbid": "cog",
+    "name": "Galactique",
+    "currency": "cr",
+    "sag": {
+      "short": "per",
+      "long": "perception"
     }
   }
 ]
