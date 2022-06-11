@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists } = require('../lib');
 
@@ -25,16 +25,21 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(sql, function (err, result) {
-    if (err) throw err;
-    if (result.length == 0) {
-      res.sendStatus(404);
-    } else {
-      res.status(200).json({
-        rs: result,
-      });
-    }
-  });
+  knex
+    .select()
+    .from(`${dbid}_familles`)
+    .then(function (result) {
+      if (result.length == 0) {
+        res.sendStatus(404);
+      } else {
+        res.status(200).json({
+          rs: result,
+        });
+      }
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 module.exports = router;

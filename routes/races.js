@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists } = require('../lib');
 
@@ -25,28 +25,44 @@ router.get('/:ds', (req, res, next) => {
 
   const typeList = req.query.types || '';
   let typeIn = '';
+  let types = [];
+  let orNull = '';
   if (typeList !== '') {
     types = typeList.split(',');
     for (const type of types) {
-      typeIn += `,'${type}'`;
+      if (type === 'base') {
+        orNull = ' or type_race is null';
+      } else {
+        typeIn += `,'${type}'`;
+      }
     }
-    where = `where ${dbid}_races.type_race in (${typeIn.slice(1)})`;
+    where = `where type_race in (${typeIn.slice(1)})${orNull}`;
   }
 
   const sql = [`select * from ${dbid}_races`, where].join(' ');
 
   trace.output(sql);
 
-  db.query(sql, function (err, result) {
-    if (err) throw err;
-    if (result.length == 0) {
-      res.sendStatus(404);
-    } else {
-      res.status(200).json({
-        rs: result,
-      });
-    }
-  });
+  knex
+    .select()
+    .from(`${dbid}_races`)
+    .whereIn('type_race', types)
+    .orWhere((builder) => {
+      if (orNull !== '') builder.whereNull('type_race');
+      return builder;
+    })
+    .then(function (result) {
+      if (result.length == 0) {
+        res.sendStatus(404);
+      } else {
+        res.status(200).json({
+          rs: result,
+        });
+      }
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 /**
@@ -66,13 +82,11 @@ router.get('/:ds/:race', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [race],
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .select()
+    .from(`${dbid}_races`)
+    .where('race', race)
+    .then(function (result) {
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -80,8 +94,10 @@ router.get('/:ds/:race', (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 module.exports = router;

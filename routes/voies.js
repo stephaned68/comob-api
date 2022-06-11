@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists } = require('../lib');
 
@@ -23,7 +23,7 @@ router.get('/:ds', (req, res, next) => {
 
   let type = req.query.type || '';
 
-  if (type === '') throw 'Required URL argument not found';
+  if (type.trim() === '') throw 'Required URL argument not found';
 
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,
@@ -34,13 +34,10 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [type],
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .raw(sql, [type])
+    .then(function (result) {
+      result = result[0];
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -48,8 +45,10 @@ router.get('/:ds', (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 /**
@@ -110,13 +109,10 @@ router.get('/:ds/:profile', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [profile],
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .raw(sql, [profile])
+    .then(function (result) {
+      result = result[0];
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -124,8 +120,10 @@ router.get('/:ds/:profile', (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 module.exports = router;

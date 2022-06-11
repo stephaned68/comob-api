@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists, getDataset } = require('../lib');
 
@@ -34,12 +34,10 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .select()
+    .from(`${table}`)
+    .then(function (result) {
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -53,8 +51,10 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 module.exports = router;

@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists } = require('../lib');
 
@@ -34,6 +34,7 @@ router.get('/:ds', (req, res, next) => {
   }
 
   let sql = '';
+  let qb = null;
 
   if (race !== '') {
     sql = [
@@ -42,6 +43,10 @@ router.get('/:ds', (req, res, next) => {
       `from ${dbid}_races_traits`,
       `where race = '${race}'`,
     ].join(' ');
+    qb = knex
+      .select('intitule', 'description')
+      .from(`${dbid}_races_traits`)
+      .where('race', race);
   }
 
   if (profile !== '') {
@@ -51,26 +56,25 @@ router.get('/:ds', (req, res, next) => {
       `from ${dbid}_profils_traits`,
       `where profil = '${profile}'`,
     ].join(' ');
+    qb = knex
+      .select('intitule', 'description')
+      .from(`${dbid}_profils_traits`)
+      .where('profil', profile);
   }
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [],
-    },
-    function (err, result) {
-      if (err) throw err;
-      if (result.length == 0) {
-        res.sendStatus(404);
-      } else {
-        res.status(200).json({
-          rs: result,
-        });
-      }
+  qb.then(function (result) {
+    if (result.length == 0) {
+      res.sendStatus(404);
+    } else {
+      res.status(200).json({
+        rs: result,
+      });
     }
-  );
+  }).catch(function (error) {
+    if (error) throw error;
+  });
 });
 
 module.exports = router;

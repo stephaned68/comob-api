@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists } = require('../lib');
 
@@ -30,16 +30,24 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(sql, function (err, result) {
-    if (err) throw err;
-    if (result.length == 0) {
-      res.sendStatus(404);
-    } else {
-      res.status(200).json({
-        rs: result,
-      });
-    }
-  });
+  knex
+    .select()
+    .from(`${dbid}_categories_equipement`)
+    .whereNull('parent')
+    .orWhere('parent', '')
+    .orderBy('sequence', 'code')
+    .then(function (result) {
+      if (result.length == 0) {
+        res.sendStatus(404);
+      } else {
+        res.status(200).json({
+          rs: result,
+        });
+      }
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 /**
@@ -64,13 +72,13 @@ router.get('/:ds/:parent', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [parent],
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .select()
+    .from(`${dbid}_categories_equipement`)
+    .where('parent', parent)
+    .where('sequence', '<', '90000')
+    .orderBy('sequence', 'code')
+    .then(function (result) {
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -78,8 +86,10 @@ router.get('/:ds/:parent', (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 module.exports = router;

@@ -1,6 +1,7 @@
 {
     "db": {
         "host": "mysql-co-api.alwaysdata.net",
+        "port": 3306,
         "user": "co-api",
         "password": "F0rty!tw0",
         "database": "co-api_comobdb"

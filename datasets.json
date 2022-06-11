@@ -15,7 +15,7 @@
       "long": "sagesse"
     },
     "colors": {
-      "title": "#CC9966"
+      "title": "#cc9966"
     }
   },
   {
@@ -34,7 +34,7 @@
       "long": "sagesse"
     },
     "colors": {
-      "title": "#87CEFA"
+      "title": "#87cefa"
     }
   },
   {
@@ -46,7 +46,7 @@
       "long": "perception"
     },
     "colors": {
-      "title": "#66CC99"
+      "title": "#66cc99"
     }
   },
   {
@@ -58,7 +58,7 @@
       "long": "perception"
     },
     "colors": {
-      "title": "#FBF2B7"
+      "title": "#fbf2b7"
     }
   },
   {
@@ -70,7 +70,7 @@
       "long": "perception"
     },
     "colors": {
-      "title": "#9966CC",
+      "title": "#9966cc",
       "text": "#fff"
     }
   },
@@ -82,6 +82,10 @@
     "sag": {
       "short": "per",
       "long": "perception"
+    },
+    "colors": {
+      "title": "#22272e",
+      "text": "#e8da63"
     }
   }
 ]

@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../dbconnect');
+const knex = require('../dbknex');
 
 const { dsExists } = require('../lib');
 
@@ -94,13 +94,10 @@ router.get('/:ds', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [],
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .raw(sql)
+    .then(function (result) {
+      result = result[0];
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -108,8 +105,10 @@ router.get('/:ds', (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 /**
@@ -147,13 +146,10 @@ router.get('/:ds/:path', (req, res, next) => {
 
   trace.output(sql);
 
-  db.query(
-    {
-      sql: sql,
-      values: [path],
-    },
-    function (err, result) {
-      if (err) throw err;
+  knex
+    .raw(sql, [path])
+    .then(function (result) {
+      result = result[0];
       if (result.length == 0) {
         res.sendStatus(404);
       } else {
@@ -161,8 +157,10 @@ router.get('/:ds/:path', (req, res, next) => {
           rs: result,
         });
       }
-    }
-  );
+    })
+    .catch(function (error) {
+      if (error) throw error;
+    });
 });
 
 module.exports = router;
