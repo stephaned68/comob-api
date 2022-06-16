@@ -2,7 +2,7 @@ const config = require('config');
 const trace = require('./trace');
 
 let dbConfig = config.get('db');
-if (dbConfig === {}) {
+if (Object.keys(dbConfig).length === 0) {
   dbConfig.host = process.env.DB_HOST;
   dbConfig.port = process.env.DB_PORT;
   dbConfig.user = process.env.DB_USER;
