@@ -36,21 +36,19 @@ router.get('/:ds', (req, res, next) => {
         typeIn += `,'${type}'`;
       }
     }
-    where = `where type_race in (${typeIn.slice(1)})${orNull}`;
+    where = `type_race in (${typeIn.slice(1)})${orNull}`;
+  } else {
+    where = 'type_race is null';
   }
 
-  const sql = [`select * from ${dbid}_races`, where].join(' ');
+  const sql = [`select * from ${dbid}_races where `, where].join(' ');
 
   trace.output(sql);
 
   knex
     .select()
     .from(`${dbid}_races`)
-    .whereIn('type_race', types)
-    .orWhere((builder) => {
-      if (orNull !== '') builder.whereNull('type_race');
-      return builder;
-    })
+    .where(knex.raw(where))
     .then(function (result) {
       if (result.length == 0) {
         res.sendStatus(404);
