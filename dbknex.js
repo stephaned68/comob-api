@@ -15,6 +15,8 @@ const knex = require('knex')({
   connection: dbConfig,
 });
 
+knex.raw('set names utf8;');
+
 knex.on('query', function (debugData) {
   trace.output(debugData);
 });
