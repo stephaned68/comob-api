@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Now using [KnexJS](http://knexjs.org/) for all database access
+- Removed package config and use only dotenv and environment variables for db access
 
 ---
 
