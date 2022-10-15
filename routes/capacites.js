@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../dbknex');
 
-const { dsExists } = require('../lib');
+const { dsExists, stringOrDefault } = require('../lib');
 
 const trace = require('../trace');
 
@@ -21,14 +21,14 @@ const trace = require('../trace');
  * Return abilities for a given race
  */
 router.get('/:ds', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
 
-  let type = req.query.type || '';
-  let profile = req.query.profile || '';
-  let race = req.query.race || '';
+  let type = stringOrDefault(req.query.type);
+  let profile = stringOrDefault(req.query.profile);
+  let race = stringOrDefault(req.query.race);
 
   if (type !== '' && profile !== '' && race !== '') {
     throw 'Only one URL argument can be passed';
@@ -116,7 +116,7 @@ router.get('/:ds', (req, res, next) => {
  * Return abilities for a given path
  */
 router.get('/:ds/:path', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }

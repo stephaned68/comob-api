@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../dbknex');
 
-const { dsExists, getDataset } = require('../lib');
+const { dsExists, getDataset, stringOrDefault } = require('../lib');
 
 const trace = require('../trace');
 
@@ -16,7 +16,7 @@ const trace = require('../trace');
  * Return the list of special path types
  */
 router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }

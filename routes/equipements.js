@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../dbknex');
 
-const { dsExists } = require('../lib');
+const { dsExists, stringOrDefault } = require('../lib');
 
 const trace = require('../trace');
 
@@ -16,12 +16,12 @@ const trace = require('../trace');
  * Return the base equipment for a given profile
  */
 router.get('/:ds', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
 
-  let profile = req.query.profile || '';
+  let profile = stringOrDefault(req.query.profile);
 
   if (profile === '') throw 'Required URL argument not found';
 
@@ -89,7 +89,7 @@ router.get('/:ds', (req, res, next) => {
  * Return the equipments for a given subcategory
  */
 router.get('/:ds/:category', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }

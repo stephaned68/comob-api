@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../dbknex');
 
-const { dsExists } = require('../lib');
+const { dsExists, stringOrDefault } = require('../lib');
 
 const trace = require('../trace');
 
@@ -18,13 +18,13 @@ const trace = require('../trace');
  * Return the special traits for a given profile
  */
 router.get('/:ds', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
 
-  const race = req.query.race || '';
-  const profile = req.query.profile || '';
+  const race = stringOrDefault(req.query.race);
+  const profile = stringOrDefault(req.query.profile);
 
   if (race === '' && profile === '') {
     throw 'Required URL argument not found';

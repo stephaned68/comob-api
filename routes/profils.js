@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../dbknex');
 
-const { dsExists } = require('../lib');
+const { dsExists, stringOrDefault } = require('../lib');
 
 const trace = require('../trace');
 
@@ -18,14 +18,14 @@ const trace = require('../trace');
  *   - and/or a type of profile
  */
 router.get('/:ds', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
 
   let wheres = [];
 
-  const familyList = req.query.family || '';
+  const familyList = stringOrDefault(req.query.family);
   let familyIn = '';
   if (familyList !== '') {
     families = familyList.split(',');
@@ -35,7 +35,7 @@ router.get('/:ds', (req, res, next) => {
     wheres.push(`pr.famille in (${familyIn.slice(1)})`);
   }
 
-  let type = req.query.type || '';
+  let type = stringOrDefault(req.query.type);
   if (type !== '') {
     wheres.push(`type='${type}'`);
   }

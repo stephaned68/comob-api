@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../dbknex');
 
-const { dsExists } = require('../lib');
+const { dsExists, stringOrDefault } = require('../lib');
 
 const trace = require('../trace');
 
@@ -16,7 +16,7 @@ const trace = require('../trace');
  * Return list of categories for a dataset
  */
 router.get('/:ds', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
@@ -55,12 +55,12 @@ router.get('/:ds', (req, res, next) => {
  * Return list of sub-categories for a dataset and parent category
  */
 router.get('/:ds/:parent', (req, res, next) => {
-  const dbid = req.params.ds;
+  const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
     throw 'Unknown dataset';
   }
 
-  const parent = req.params.parent;
+  const parent = stringOrDefault(req.params.parent);
 
   const sql = [
     `select * from ${dbid}_categories_equipement`,
