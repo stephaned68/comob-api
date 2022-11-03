@@ -22,5 +22,5 @@ const app = require('./app');
 const server = http.createServer(app);
 
 server.listen(port, ip, () => {
-  console.log(`Started server v${pkg.version} on ${ip}:${port}...`);
+  console.log(`Started COMob API server v${pkg.version} on ${ip}:${port}...`);
 });
