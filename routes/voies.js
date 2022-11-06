@@ -23,15 +23,15 @@ router.get('/:ds', (req, res, next) => {
 
   let type = stringOrDefault(req.query.type);
 
-  if (type.trim() === '') throw 'Required URL argument not found';
-
+  if (type === '') throw 'Required URL argument not found';
+  
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,
-    type === ' '
-      ? "where vo.type is null or vo.type = ''"
+    type === ' ' ?
+      "where vo.type is null or vo.type = '' or vo.type = ?"
       : `where vo.type = ?`,
   ].join(' ');
-
+  
   trace.output(sql);
 
   knex
