@@ -1,3 +1,5 @@
+const colors = require('colors/safe');
+
 module.exports = {
   
   // check if ds exists
@@ -26,4 +28,12 @@ module.exports = {
   stringOrDefault: function (value, onError = "") {
     return value || onError;
   },
+
+  // error handling function
+  errorHandler: (error, request, response, next) => {
+    response.setHeader('Content-Type', 'application/json');
+    response.status(500);
+    console.log(colors.bgRed.white(" ERROR : "), colors.red(error));
+    response.send({ error });
+  }
 };

@@ -19,6 +19,7 @@ const categoriesRoutes = require('./routes/categories');
 const equipmentRoutes = require('./routes/equipements');
 const racesRoutes = require('./routes/races');
 const traitsRoutes = require('./routes/traits');
+const { errorHandler } = require('./lib');
 
 const mode = process.env.NODE_ENV || 'development';
 
@@ -94,5 +95,10 @@ app.use('/races', racesRoutes);
  * Declare the traits routes
  */
 app.use('/traits', traitsRoutes);
+
+/**
+ * Declare the error handling routine
+ */
+app.use(errorHandler);
 
 module.exports = app;

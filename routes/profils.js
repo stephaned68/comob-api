@@ -2,6 +2,7 @@
  * Profiles routes
  */
 
+const { json } = require('express');
 const express = require('express');
 const router = express.Router();
 
@@ -20,7 +21,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw { error: 'Unknown dataset' };
+    throw 'Invalid dataset';
   }
 
   let wheres = [];
