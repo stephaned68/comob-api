@@ -20,7 +20,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { error: 'Unknown dataset' };
   }
 
   let wheres = [];
