@@ -29,11 +29,9 @@ module.exports = {
     return value || onError;
   },
 
-  // error handling function
-  errorHandler: (error, request, response, next) => {
-    response.setHeader('Content-Type', 'application/json');
-    response.status(500);
-    console.log(colors.bgRed.white(" ERROR : "), colors.red(error));
-    response.send({ error });
+  Ok: function (response, result) {
+    response.status(200).json({
+      rs: result,
+    });
   }
 };

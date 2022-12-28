@@ -6,9 +6,8 @@ const express = require('express');
 const router = express.Router();
 
 const knex = require('../dbknex');
-
-const { dsExists, stringOrDefault } = require('../lib');
-
+const { errorNotFound } = require('../errors');
+const { dsExists, stringOrDefault, Ok } = require('../lib');
 const trace = require('../trace');
 
 /**
@@ -18,7 +17,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message:'Unknown dataset' };
   }
 
   const sql = [
@@ -38,15 +37,13 @@ router.get('/:ds', (req, res, next) => {
     .orderBy('sequence', 'code')
     .then(function (result) {
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 
@@ -57,7 +54,7 @@ router.get('/:ds', (req, res, next) => {
 router.get('/:ds/:parent', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message:'Unknown dataset' };
   }
 
   const parent = stringOrDefault(req.params.parent);
@@ -80,15 +77,13 @@ router.get('/:ds/:parent', (req, res, next) => {
     .orderBy('sequence', 'code')
     .then(function (result) {
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 

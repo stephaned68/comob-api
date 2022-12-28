@@ -6,9 +6,8 @@ const express = require('express');
 const router = express.Router();
 
 const knex = require('../dbknex');
-
-const { dsExists, stringOrDefault } = require('../lib');
-
+const { errorNotFound } = require('../errors');
+const { dsExists, stringOrDefault, Ok } = require('../lib');
 const trace = require('../trace');
 
 /**
@@ -23,7 +22,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message:'Unknown dataset' };
   }
 
   let type = stringOrDefault(req.query.type);
@@ -31,10 +30,10 @@ router.get('/:ds', (req, res, next) => {
   let race = stringOrDefault(req.query.race);
 
   if (type !== '' && profile !== '' && race !== '') {
-    throw 'Only one URL argument can be passed';
+    throw { status:400, message:'Only one URL argument can be passed' };
   }
   if (type === '' && profile === '' && race === '') {
-    throw 'Required URL argument not found';
+    throw { status:400, message:'Required URL argument not found' };
   }
 
   let sql = '';
@@ -99,15 +98,13 @@ router.get('/:ds', (req, res, next) => {
     .then(function (result) {
       result = result[0];
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 
@@ -118,7 +115,7 @@ router.get('/:ds', (req, res, next) => {
 router.get('/:ds/:path', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message:'Unknown dataset' };
   }
   const path = decodeURI(req.params.path);
 
@@ -151,15 +148,13 @@ router.get('/:ds/:path', (req, res, next) => {
     .then(function (result) {
       result = result[0];
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 

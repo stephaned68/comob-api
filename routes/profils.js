@@ -7,9 +7,8 @@ const express = require('express');
 const router = express.Router();
 
 const knex = require('../dbknex');
-
-const { dsExists, stringOrDefault } = require('../lib');
-
+const { errorNotFound } = require('../errors');
+const { dsExists, stringOrDefault, Ok } = require('../lib');
 const trace = require('../trace');
 
 /**
@@ -21,7 +20,7 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Invalid dataset';
+    throw { status:404, message:'Invalid dataset' };
   }
 
   let wheres = [];
@@ -67,18 +66,16 @@ router.get('/:ds', (req, res, next) => {
     .then(function (result) {
       result = result[0];
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
         result.forEach((dataRow) => {
           dataRow.famille = JSON.parse(dataRow.famille);
         });
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 

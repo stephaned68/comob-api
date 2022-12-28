@@ -19,7 +19,7 @@ const categoriesRoutes = require('./routes/categories');
 const equipmentRoutes = require('./routes/equipements');
 const racesRoutes = require('./routes/races');
 const traitsRoutes = require('./routes/traits');
-const { errorHandler } = require('./lib');
+const { errorHandler } = require('./errors');
 
 const mode = process.env.NODE_ENV || 'development';
 

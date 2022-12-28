@@ -6,9 +6,8 @@ const express = require('express');
 const router = express.Router();
 
 const knex = require('../dbknex');
-
-const { dsExists, getDataset, stringOrDefault } = require('../lib');
-
+const { errorNotFound } = require('../errors');
+const { dsExists, getDataset, stringOrDefault, Ok } = require('../lib');
 const trace = require('../trace');
 
 /**
@@ -18,7 +17,7 @@ const trace = require('../trace');
 router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message:'Unknown dataset' };
   }
   const dataset = getDataset(dbid);
 
@@ -39,7 +38,7 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
     .from(`${table}`)
     .then(function (result) {
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
         result = result.filter((p) => {
           if ((dataset.hidePaths || []).length === 0) return true;
@@ -47,13 +46,11 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
             dataset.hidePaths.findIndex((path) => p.type_voie === path) === -1
           );
         });
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 

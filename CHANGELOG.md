@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [2.1.0] - 2022-12-28
+
+### Changed
+
+- New errors.js module with enhanced error & exception handling
+- Sends a JSON response with { "error": "... Message ..." }
+
+---
+
+## [2.0.0] - 2022-06-11
 
 ### Changed
 

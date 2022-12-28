@@ -6,9 +6,8 @@ const express = require('express');
 const router = express.Router();
 
 const knex = require('../dbknex');
-
-const { dsExists, stringOrDefault } = require('../lib');
-
+const { errorNotFound } = require('../errors');
+const { dsExists, stringOrDefault, Ok } = require('../lib');
 const trace = require('../trace');
 
 /**
@@ -18,12 +17,12 @@ const trace = require('../trace');
 router.get('/:ds', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message:'Unknown dataset' };
   }
 
   let type = stringOrDefault(req.query.type);
 
-  if (type === '') throw 'Required URL argument not found';
+  if (type === '') throw { status:400, message:'Required URL argument not found' };
   
   const sql = [
     `select vo.* from ${dbid}_voies as vo`,
@@ -39,15 +38,13 @@ router.get('/:ds', (req, res, next) => {
     .then(function (result) {
       result = result[0];
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 
@@ -60,7 +57,7 @@ router.get('/:ds', (req, res, next) => {
 router.get('/:ds/:profile', (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
   if (!dsExists(dbid)) {
-    throw 'Unknown dataset';
+    throw { status:404, message: 'Not Found' };
   }
 
   const profile = decodeURI(req.params.profile);
@@ -114,15 +111,13 @@ router.get('/:ds/:profile', (req, res, next) => {
     .then(function (result) {
       result = result[0];
       if (result.length == 0) {
-        res.sendStatus(404);
+        errorNotFound(res);
       } else {
-        res.status(200).json({
-          rs: result,
-        });
+        Ok(res, result);
       }
     })
     .catch(function (error) {
-      if (error) throw error;
+      if (error) throw { message:error.message };
     });
 });
 

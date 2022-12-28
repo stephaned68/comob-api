@@ -77,7 +77,6 @@
   {
     "dbid": "cog",
     "name": "Galactique",
-    "hidden": true,
     "currency": "cr",
     "sag": {
       "short": "per",
