@@ -41,7 +41,7 @@ if (mode !== 'development') {
  */
 if (mode === 'development') {
   const morgan = require('morgan');
-  app.use(morgan('combined'));
+  app.use(morgan('dev'));
 }
 
 /**
