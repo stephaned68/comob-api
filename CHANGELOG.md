@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- New errors.js module with enhanced error & exception handling
+- New `errors` module with enhanced error & exception handling
 - Sends a JSON response with { "error": "... Message ..." }
 
 ---
