@@ -14,7 +14,6 @@ const knex = require("knex")({
 });
 
 knex.raw("SET NAMES UTF8;").then();
-knex.raw("SET GLOBAL GROUP_CONCAT_MAX_LEN = 1000000;").then();
 
 knex.on("query", function (debugData) {
   trace.output(debugData);
