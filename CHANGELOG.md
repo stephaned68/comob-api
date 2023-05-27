@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.0] - 2023-005-27
+
+### Changed
+
+- dbkex, errors, lib and trace modules moved to /core folder
+- All /routes modules now use functions defined in /controllers/{entity}Controller modules
+- New /controllers/{entity}Controller modules use functions defined in /queries/{entity}Queries modules
+- New /queries/{entity}Queries modules define and return SQL queries either as string or knex object
+
 ## [2.1.0] - 2022-12-28
 
 ### Changed

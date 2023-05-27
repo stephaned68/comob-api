@@ -5,10 +5,10 @@
 const express = require('express');
 const router = express.Router();
 
-const knex = require('../dbknex');
-const { errorNotFound } = require('../errors');
-const { dsExists, getDataset, stringOrDefault, Ok } = require('../lib');
-const trace = require('../trace');
+const knex = require('../core/dbknex');
+const { errorNotFound } = require('../core/errors');
+const { dsExists, getDataset, stringOrDefault, Ok } = require('../core/lib');
+const trace = require('../core/trace');
 
 /**
  * Route : /paths/{:dataset}

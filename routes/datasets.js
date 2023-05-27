@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { int, Ok } = require('../lib');
+const { int, Ok } = require('../core/lib');
 
 const datasets = require('../datasets.json');
 

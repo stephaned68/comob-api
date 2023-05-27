@@ -13,8 +13,8 @@ const knex = require("knex")({
   connection: db,
 });
 
-knex.raw("set names utf8;");
-knex.raw("set global group_concat_max_len = 10000000;");
+knex.raw("SET NAMES UTF8;").then();
+knex.raw("SET GLOBAL GROUP_CONCAT_MAX_LEN = 1000000;").then();
 
 knex.on("query", function (debugData) {
   trace.output(debugData);

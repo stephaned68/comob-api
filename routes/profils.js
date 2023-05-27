@@ -5,11 +5,7 @@
 const { json } = require('express');
 const express = require('express');
 const router = express.Router();
-
-const knex = require('../dbknex');
-const { errorNotFound } = require('../errors');
-const { dsExists, stringOrDefault, Ok } = require('../lib');
-const trace = require('../trace');
+const profileController = require('../controllers/profileController');
 
 /**
  * Route: /profiles/{:dataset}/?family=xxxx,xxxx,xxxx&type=xxxx
@@ -17,66 +13,6 @@ const trace = require('../trace');
  *   - an optional comma-separated list of families
  *   - and/or a type of profile
  */
-router.get('/:ds', (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
-    throw { status:404, message:'Invalid dataset' };
-  }
-
-  let wheres = [];
-
-  const familyList = stringOrDefault(req.query.family);
-  let familyIn = '';
-  if (familyList !== '') {
-    families = familyList.split(',');
-    for (const family of families) {
-      familyIn += `,'${family}'`;
-    }
-    wheres.push(`pr.famille in (${familyIn.slice(1)})`);
-  }
-
-  let type = stringOrDefault(req.query.type);
-  if (type !== '') {
-    wheres.push(`type='${type}'`);
-  }
-
-  let where = '';
-  if (wheres.length !== 0) {
-    where = 'where ' + wheres.join(' and ');
-  }
-
-  const sql = [
-    'select',
-    [
-      'pr.profil as profil',
-      'pr.nom as nom',
-      'pr.description as description',
-      'json_object("id", fa.famille, "libelle", fa.description) as famille',
-    ].join(','),
-    `from ${dbid}_profils as pr`,
-    `inner join ${dbid}_familles as fa on pr.famille = fa.famille`,
-    where,
-    `order by profil`,
-  ].join(' ');
-
-  trace.output(sql);
-
-  knex
-    .raw(sql)
-    .then(function (result) {
-      result = result[0];
-      if (result.length == 0) {
-        errorNotFound(res);
-      } else {
-        result.forEach((dataRow) => {
-          dataRow.famille = JSON.parse(dataRow.famille);
-        });
-        Ok(res, result);
-      }
-    })
-    .catch(function (error) {
-      if (error) throw { message:error.message };
-    });
-});
+router.get('/:ds', profileController.getFilteredProfiles);
 
 module.exports = router;
