@@ -1,7 +1,13 @@
+/**
+ * Families data methods
+ */
+
 const knex = require('../core/dbknex');
 const { errorNotFound } = require('../core/errors');
 const { dsExists, stringOrDefault, Ok } = require('../core/lib');
 const trace = require('../core/trace');
+
+const familyQueries = require('../queries/familyQueries');
 
 const getAllFamilies = (req, res, next) => {
   const dbid = stringOrDefault(req.params.ds);
@@ -9,7 +15,7 @@ const getAllFamilies = (req, res, next) => {
     throw { status:404, message:'Unknown dataset' };
   }
 
-  const sql = knex.select().from(`${dbid}_familles`);
+  const sql = familyQueries.getAllFamilies(knex, dbid);
   trace.output(sql.toString());
 
   sql
