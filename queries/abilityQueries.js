@@ -24,7 +24,7 @@ const getByProfile = (dbid, profile) => {
         "when 3 then 'des '",
         'end as voie_deladu',
       ].join(' '),
-      'vo.notes as voie_notes',
+      'vo.notes as voie_notes'
     ].join(', '),
     `from ${dbid}_voies_profils as vp`,
     `join ${dbid}_profils as pr on pr.profil = vp.profil`,

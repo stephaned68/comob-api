@@ -25,6 +25,7 @@ const getFiltered = (dbid, familyList, type) => {
       'pr.profil as profil',
       'pr.nom as nom',
       'pr.description as description',
+      'pr.combat as combat',
       'json_object("id", fa.famille, "libelle", fa.description) as famille',
     ].join(','),
     `from ${dbid}_profils as pr`,

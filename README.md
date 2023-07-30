@@ -8,6 +8,33 @@ NodeJS Express REST API for serving Chroniques Oubliées TTRPG compendium data
 
 Returns the list of datasets
 
+    "rs": [
+        {
+            "dbid": "dataset id",
+            "name": "name of the dataset",
+            "showAbilities": [
+                {
+                    "type": "ability type to display",
+                    "label": "label on the button"
+                },
+                ...
+            ],
+            "hidePaths": [
+                "path type to hide",
+                ...
+            ],
+            "currency": "currency name",
+            "sag": {
+                "short": "abreviation for wisdom or perception",
+                "long": "long name for wisdom or perception"
+            },
+            "colors": {
+                "title": "HTML color code for header title",
+                "text": "HTML color code for header text"
+            }
+        }
+    ]
+
 ---
 
     /types/paths/:ds

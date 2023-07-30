@@ -12,6 +12,7 @@ const getByProfile = (dbid, serialized) => {
     [
       "eq.code as code",
       "eq.designation as designation",
+      "eq.prix as prix",
       "ep.nombre as nombre",
       "ep.special as special",
       `group_concat(${props} separator '~') as props`,
