@@ -22,6 +22,12 @@
     "dbid": "cof2",
     "name": "Fantasy 2E",
     "hidden": true,
+    "showAbilities": [
+      {
+        "type": "epic",
+        "label": "Epiques"
+      }
+    ],
     "currency": "pa",
     "sag": {
       "short": "per",
