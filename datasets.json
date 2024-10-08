@@ -19,6 +19,25 @@
     }
   },
   {
+    "dbid": "cof2",
+    "name": "Fantasy 2E",
+    "hidden": true,
+    "showAbilities": [
+      {
+        "type": "epic",
+        "label": "Epiques"
+      }
+    ],
+    "currency": "pa",
+    "sag": {
+      "short": "per",
+      "long": "perception"
+    },
+    "colors": {
+      "title": "#cc9966"
+    }
+  },
+  {
     "dbid": "cota",
     "name": "Terre d'Arran",
     "hidden": true,

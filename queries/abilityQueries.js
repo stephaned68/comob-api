@@ -15,7 +15,10 @@ const getByProfile = (dbid, profile) => {
       'ca.nom as capacite',
       'ca.limitee as limitee',
       'ca.sort as sort',
+      'ca.action as action',
       'ca.description as description',
+      'ca.utilisations as utilisations',
+      'ca.utilisations_freq as frequence',
       [
         'case pfx_deladu',
         "when 0 then 'du '",
@@ -52,10 +55,23 @@ const getByRace = (dbid, race) => {
 };
 
 const getByPath = (dbid) => {
+  let rang;
+  if (dbid === 'cof2') {
+    rang = [
+      'case',
+      "when json_extract(`type_voie_config`, concat('$.first_rank.', replace(vo.voie,'-','_'))) = 3 then cv.rang + 2",
+      "when json_extract(`type_voie_config`,'$.first_rank.default') = 4 then cv.rang + 3",
+      'else cv.rang',
+      'end as rang',
+    ].join(' ');
+  } else {
+    rang = 'cv.rang as rang';
+  }
+
   return [
     'select',
     [
-      'cv.rang',
+      rang,
       'ca.*',
       'vo.nom as voie',
       [
@@ -70,6 +86,7 @@ const getByPath = (dbid) => {
     `from ${dbid}_capacites_voies as cv`,
     `inner join ${dbid}_capacites as ca on cv.capacite = ca.capacite`,
     `inner join ${dbid}_voies as vo on vo.voie = cv.voie`,
+    `left join ${dbid}_types_voie as tv on tv.type_voie = vo.type`,
     `where cv.voie = ?`,
     `order by cv.rang`,
   ].join(' ');
