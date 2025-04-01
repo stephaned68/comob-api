@@ -31,8 +31,8 @@ const getByProfile = (dbid, serialized) => {
 
 const getBySubCategory = (dbid, serialized) => {
 
-  let props = "";
-  let masteredBy = "";
+  let props = '';
+  let masteredBy = '';
   if (serialized) {
     props = "concat_ws(' : ', pe.intitule, ep.valeur)";
     masteredBy = "pr.nom";

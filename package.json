@@ -1,6 +1,6 @@
 {
   "name": "co-api",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Comob API with Express & Knex",
   "main": "index.js",
   "scripts": {

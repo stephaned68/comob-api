@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { int, Ok } = require('../core/lib');
+const { intval, Ok } = require('../core/lib');
 
 const datasets = require('../datasets.json');
 
 router.get('/', (req, res, next) => {
-  const includeAll = int(req.query.all);
-  const includeCOF2 = int(req.query.cof2);
+  const { all: includeAll = '0', cof2: includeCOF2 = '0' } = req.query;
   const data = datasets.filter((dataset) => {
-    if (includeAll === 1) return true;
-    if (includeCOF2 === 1 && dataset.dbid === "cof2") return true;
+    if (intval(includeAll) === 1) 
+      return true;
+    if (intval(includeCOF2) === 1 && dataset.dbid === "cof2") 
+      return true;
     const hidden = dataset.hidden || false;
     return !hidden;
   });

@@ -4,30 +4,28 @@
 
 const knex = require('../core/dbknex');
 const { errorNotFound } = require('../core/errors');
-const { dsExists, stringOrDefault, Ok } = require('../core/lib');
+const { dsExists, strval, Ok } = require('../core/lib');
 const trace = require('../core/trace');
 
 const traitQueries = require('../queries/traitQueries');
 
 const getByType = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const dbid = strval(req.params.ds);
+  if (!dsExists(dbid))
     throw { status:404, message:'Unknown dataset' };
-  }
 
-  const race = stringOrDefault(req.query.race);
-  const profile = stringOrDefault(req.query.profile);
-
-  if (race === '' && profile === '') {
+  const { race = '', profile = '' } = req.query;
+  
+  if (race === '' && profile === '')
     throw { status:400, message:'Required URL argument not found' };
-  }
-  if (race !== '' && profile !== '') {
+  if (race !== '' && profile !== '')
     throw { status:400, message:'Too many URL arguments passed in' };
-  }
 
   let sql = '';
-  if (race !== '') sql = traitQueries.getByRace(knex, dbid, race);
-  if (profile !== '') sql = traitQueries.getByProfile(knex, dbid, profile);
+  if (race !== '')
+    sql = traitQueries.getByRace(knex, dbid, race);
+  if (profile !== '') 
+    sql = traitQueries.getByProfile(knex, dbid, profile);
   trace.output(sql.toString());
 
   sql.then(function (result) {
@@ -37,7 +35,8 @@ const getByType = (req, res, next) => {
       Ok(res, result);
     }
   }).catch(function (error) {
-    if (error) throw { message: error.message };
+    if (error)
+      throw { message: error.message };
   });
 };
 

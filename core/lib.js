@@ -15,20 +15,21 @@ module.exports = {
   },
 
   // integer
-  int: function (value, onError = 0) {
+  intval: function (value, onError = 0) {
     return parseInt(value) || onError;
   },
 
   // float
-  float: function (value, onError = 0) {
+  numval: function (value, onError = 0) {
     return parseFloat(value) || onError;
   },
 
   // string or default
-  stringOrDefault: function (value, onError = "") {
+  strval: function (value, onError = '') {
     return value || onError;
   },
 
+  // Return 200 OK response
   Ok: function (response, result) {
     response.status(200).json({
       rs: result,

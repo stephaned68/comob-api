@@ -4,16 +4,15 @@
 
 const knex = require('../core/dbknex');
 const { errorNotFound } = require('../core/errors');
-const { dsExists, stringOrDefault, Ok } = require('../core/lib');
+const { dsExists, strval, Ok } = require('../core/lib');
 const trace = require('../core/trace');
 
 const familyQueries = require('../queries/familyQueries');
 
 const getAllFamilies = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const dbid = strval(req.params.ds);
+  if (!dsExists(dbid))
     throw { status:404, message:'Unknown dataset' };
-  }
 
   const sql = familyQueries.getAllFamilies(knex, dbid);
   trace.output(sql.toString());
@@ -27,7 +26,8 @@ const getAllFamilies = (req, res, next) => {
       }
     })
     .catch(function (error) {
-      if (error) throw { message:error.message };
+      if (error) 
+        throw { message:error.message };
     });
 };
 

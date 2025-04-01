@@ -4,19 +4,16 @@
 
 const knex = require('../core/dbknex');
 const { errorNotFound } = require('../core/errors');
-const { dsExists, stringOrDefault, Ok } = require('../core/lib');
+const { dsExists, strval, Ok } = require('../core/lib');
 const trace = require('../core/trace');
 const profileQueries = require('../queries/profileQueries');
 
 const getFilteredProfiles = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const dbid = strval(req.params.ds);
+  if (!dsExists(dbid))
     throw { status:404, message:'Invalid dataset' };
-  }
 
-  const familyList = stringOrDefault(req.query.family);
-
-  const type = stringOrDefault(req.query.type);
+  const { familyList = '', type = '' } = req.query;
 
   const sql = profileQueries.getFiltered(dbid, familyList, type);
   trace.output(sql);
@@ -35,7 +32,8 @@ const getFilteredProfiles = (req, res, next) => {
       }
     })
     .catch(function (error) {
-      if (error) throw { message:error.message };
+      if (error) 
+        throw { message:error.message };
     });
 }
 

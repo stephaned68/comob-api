@@ -4,16 +4,15 @@
 
 const knex = require('../core/dbknex');
 const { errorNotFound } = require('../core/errors');
-const { dsExists, stringOrDefault, Ok } = require('../core/lib');
+const { dsExists, strval, Ok } = require('../core/lib');
 const trace = require('../core/trace');
 
 const categoryQueries = require('../queries/categoryQueries');
 
 const getAllCategories = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const dbid = strval(req.params.ds);
+  if (!dsExists(dbid))
     throw { status:404, message:'Unknown dataset' };
-  }
 
   const sql = categoryQueries.getAllCategories(knex, dbid);
   trace.output(sql.toString());
@@ -32,12 +31,9 @@ const getAllCategories = (req, res, next) => {
 };
 
 const getByParent = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const { ds: dbid = '', parent = '' } = req.params;
+  if (!dsExists(dbid))
     throw { status:404, message:'Unknown dataset' };
-  }
-
-  const parent = stringOrDefault(req.params.parent);
 
   const sql = categoryQueries.getByParent(knex, dbid, parent);
   trace.output(sql.toString());
@@ -51,7 +47,8 @@ const getByParent = (req, res, next) => {
       }
     })
     .catch(function (error) {
-      if (error) throw { message:error.message };
+      if (error)
+        throw { message:error.message };
     });
 };
 

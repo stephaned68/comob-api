@@ -7,7 +7,7 @@ const router = express.Router();
 
 const knex = require('../core/dbknex');
 const { errorNotFound } = require('../core/errors');
-const { dsExists, getDataset, stringOrDefault, Ok } = require('../core/lib');
+const { dsExists, getDataset, strval, Ok } = require('../core/lib');
 const trace = require('../core/trace');
 
 /**
@@ -15,10 +15,9 @@ const trace = require('../core/trace');
  * Return the list of special path types
  */
 router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const dbid = strval(req.params.ds);
+  if (!dsExists(dbid))
     throw { status:404, message:'Unknown dataset' };
-  }
   const dataset = getDataset(dbid);
 
   const tables = {
@@ -35,13 +34,14 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
 
   knex
     .select()
-    .from(`${table}`)
+    .from(table)
     .then(function (result) {
       if (result.length == 0) {
         errorNotFound(res);
       } else {
         result = result.filter((p) => {
-          if ((dataset.hidePaths || []).length === 0) return true;
+          if ((dataset.hidePaths || []).length === 0)
+            return true;
           return (
             dataset.hidePaths.findIndex((path) => p.type_voie === path) === -1
           );
@@ -50,7 +50,8 @@ router.get(['/paths/:ds', '/abilities/:ds', '/races/:ds'], (req, res, next) => {
       }
     })
     .catch(function (error) {
-      if (error) throw { message:error.message };
+      if (error) 
+        throw { message:error.message };
     });
 });
 

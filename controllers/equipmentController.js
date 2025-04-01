@@ -4,20 +4,19 @@
 
 const knex = require("../core/dbknex");
 const { errorNotFound } = require("../core/errors");
-const { dsExists, stringOrDefault, Ok } = require("../core/lib");
+const { dsExists, strval, Ok } = require("../core/lib");
 const trace = require("../core/trace");
 
 const equipmentQueries = require('../queries/equipmentQueries');
 
 const getByProfile = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const dbid = strval(req.params.ds);
+  if (!dsExists(dbid))
     throw { status: 404, message: "Unknown dataset" };
-  }
 
-  const profile = stringOrDefault(req.query.profile);
+  const profile = strval(req.query.profile);
 
-  if (profile === "")
+  if (profile === '')
     throw { status: 400, message: "Required URL argument not found" };
 
   const serialized = Object.keys(req.query).indexOf("serialized") != -1;
@@ -52,12 +51,9 @@ const getByProfile = (req, res, next) => {
 }
 
 const getBySubCategory = (req, res, next) => {
-  const dbid = stringOrDefault(req.params.ds);
-  if (!dsExists(dbid)) {
+  const { ds: dbid = '', category } = strval(req.params);
+  if (!dsExists(dbid))
     throw { status: 404, message: "Unknown dataset" };
-  }
-
-  const category = decodeURI(req.params.category);
 
   const serialized = Object.keys(req.query).indexOf("serialized") !== -1;
 
@@ -65,7 +61,7 @@ const getBySubCategory = (req, res, next) => {
   trace.output(sql);
 
   knex
-    .raw(sql, [category])
+    .raw(sql, [ decodeURI(category) ])
     .then(function (result) {
       result = result[0];
       if (result.length == 0) {
@@ -90,7 +86,8 @@ const getBySubCategory = (req, res, next) => {
       }
     })
     .catch(function (error) {
-      if (error) throw { message: error.message };
+      if (error)
+        throw { message: error.message };
     });
 };
 
