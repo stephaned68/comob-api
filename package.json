@@ -2,10 +2,11 @@
   "name": "co-api",
   "version": "2.3.0",
   "description": "Comob API with Express & Knex",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "server.js"
   },
   "author": "Stéphane Devouard",
   "license": "ISC",
